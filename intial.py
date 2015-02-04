@@ -86,4 +86,6 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
 3. make the plots 
 4. Modualize the code -> Done 
 5. PEP8 - DONE 
+6. Finish the plots 
+7. Better cats balanced and higher accuary (varied dataset)
 '''
