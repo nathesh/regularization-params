@@ -11,18 +11,18 @@ import sys
 
 def data(input):  # return the data
     if input == 0:
-        cats = ['alt.atheism', 'talk.religion.misc']
+        cats = ['alt.atheism', 'soc.religion.christian']
         # I got all (train and test)?? remove stuff
-        ngs = ngs(subset='all', categories=cats, remove=(
+        ngs_1 = ngs(subset='all', categories=cats, remove=(
             'headers', 'footers', 'quotes'))
-        return ngs
+        return ngs_1
 
 
 def clean(input):  # return data, target, vectorizer and length
     # covert ngs.data into a numpy array and getting the length
-    length = len(ngs.data)
-    data = np.array(ngs.data)
-    target_vals = np.array(ngs.target)
+    length = len(input.data)
+    data = np.array(input.data)
+    target_vals = np.array(input.target)
     # using the SGD model
     vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 2))
     return (data, target_vals, vectorizer, length)
@@ -34,9 +34,11 @@ def model(type, alpha):
 
 
 def trails(data, target_vals, vectorizer, bs, ml):
+    print "I am here man!"
     for c in range(3, -4, -1):
         alpha = 10 ** c
         scores = []
+        print "I is here!"
         for train_index, test_index in bs:
             train = data[train_index]
             test = data[test_index]
@@ -45,12 +47,12 @@ def trails(data, target_vals, vectorizer, bs, ml):
             fit = vectorizer.fit(train)
             vector_train = fit.transform(train)
             vector_test = fit.transform(test)
-            #vector_train = vectorizer.fit_transform(train)
-            #vector_test = vectorizer.transform(test)
+            # vector_train = vectorizer.fit_transform(train)
+            # vector_test = vectorizer.transform(test)
 
-            model = model(m, alpha)
-            model.fit(vector_train, train_target_vals)
-            predict = model.predict(vector_test)
+            model_1 = model(ml, alpha)
+            model_1.fit(vector_train, train_target_vals)
+            predict = model_1.predict(vector_test)
             # The metrics that I am going to use are accuracy,percision, F1 and
             # recall
             f1 = metrics.f1_score(test_traget_vals, predict)
@@ -59,10 +61,13 @@ def trails(data, target_vals, vectorizer, bs, ml):
             recall = metrics.recall_score(test_traget_vals, predict)
             measures = (f1, accuracy, precision, recall)
             scores.append(measures)
-            return scores
+        output(scores,alpha)
+         
+            
 
 
-def output(scores):
+def output(scores,alpha):
+    print 'yes!!!'
     name = 'output/alpha_' + str(alpha) + '.csv'
     with open(name, 'w') as out:
         csv_out = csv.writer(out)
@@ -76,16 +81,19 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     data = data(0)
     data, target_vals, vectorizer, length = clean(data)
     bs = cv.Bootstrap(length, n_iter=100)
-    scores = trails(data, target_vals, vectorizer, bs, 0)
-    output(scores)
+    print "I am here!2"
+    trails(data, target_vals, vectorizer, bs, 0)
+    print "Done?"
+    
 
 
 ''' TO DO 
 1. fix the vectorizer -> DONE
 2. debug  - DONE
-3. make the plots 
+3. make the plots -> Done 
 4. Modualize the code -> Done 
 5. PEP8 - DONE 
 6. Finish the plots 
 7. Better cats balanced and higher accuary (varied dataset)
+8. Add the inputs 
 '''
