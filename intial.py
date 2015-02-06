@@ -33,12 +33,15 @@ def model(type, alpha):
         return linear_model.SGDClassifier(alpha=alpha)
 
 
-def trails(data, target_vals, vectorizer, bs, ml):
+def trails(data, target_vals, vectorizer, bs, ml,alpha_vals):
     print "I am here man!"
-    for c in range(3, -4, -1):
-        alpha = 10 ** c
+    if alpha_vals is None: 
+        alpha_vals = []
+        for c in range(3, -4, -1):
+            a = 10 ** c
+            alpha_vals.append(a)
+    for alpha in alpha_vals:   
         scores = []
-        print "I is here!"
         for train_index, test_index in bs:
             train = data[train_index]
             test = data[test_index]
@@ -67,7 +70,6 @@ def trails(data, target_vals, vectorizer, bs, ml):
 
 
 def output(scores,alpha):
-    print 'yes!!!'
     name = 'output/alpha_' + str(alpha) + '.csv'
     with open(name, 'w') as out:
         csv_out = csv.writer(out)
@@ -78,11 +80,11 @@ def output(scores,alpha):
 if __name__ == "__main__":  # inputs -> (dataset,model used)
     # setting up bootstrap
     # getting a deprecationwarning => need to look into it
-    data = data(0)
+    data = data(0) # input 
     data, target_vals, vectorizer, length = clean(data)
     bs = cv.Bootstrap(length, n_iter=100)
-    print "I am here!2"
-    trails(data, target_vals, vectorizer, bs, 0)
+    alpha_vals = np.linspace(.0001-.00009,.0001+.00009,20) # input 
+    trails(data, target_vals, vectorizer, bs, 0,alpha_vals)
     print "Done?"
     
 
@@ -93,7 +95,10 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
 3. make the plots -> Done 
 4. Modualize the code -> Done 
 5. PEP8 - DONE 
-6. Finish the plots 
+6. Finish the plots -> DONE 
 7. Better cats balanced and higher accuary (varied dataset)
-8. Add the inputs 
+8. Add the inputs  -> DONE
+9. bins and x axis -> the same DONE
+10. Alpha value linspace around .0001 -> DONE
+11. Run the job in Condor 
 '''

@@ -1,12 +1,17 @@
 import csv 
 import numpy as np 
 import matplotlib.pyplot as P
+import os 
+from os import path 
 
-
-for c in range(3,-4,-1):
-	alpha = 10**c
-	n = "output/alpha_" + str(alpha) + ".csv"
-	with open(n,'r') as f:
+dirc = '/home/thejas/Documents/Python/regularization-params/output'
+files = os.listdir(dirc)
+for fi in files:
+#for c in range(3,-4,-1):
+	#alpha = 10**c
+	alpha = fi.split('_')[1].split('.csv')[0]
+	#n = "output/alpha_" + str(alpha) + ".csv"
+	with open(fi,'r') as f:
 		spamreader = csv.reader(f, delimiter=' ', quotechar='|')
 		f1 = []
 		accuracy = []
@@ -27,19 +32,19 @@ for c in range(3,-4,-1):
 		accuracy = np.array(accuracy)
 		precision = np.array(precision)
 		recall = np.array(recall)
-		f, ax = P.subplots(2,2)
+		f, ax = P.subplots(4,sharex=True)
 		title = 'Alpha ' + str(alpha)
 		P.suptitle(title)
-		ax[0,0].hist(f1)
-		ax[0,0].set_title('F1 Measure')
+		ax[0].hist(f1,range=(0,1))
+		ax[0].set_title('F1 Measure')
 
-		ax[0,1].hist(accuracy)
-		ax[0,1].set_title('accuracy')
+		ax[1].hist(accuracy,range=(0,1))
+		ax[1].set_title('accuracy')
 
-		ax[1,0].hist(precision)
-		ax[1,0].set_title('precision')
+		ax[2].hist(precision,range=(0,1))
+		ax[2].set_title('precision')
 
-		ax[1,1].hist(recall)
-		ax[1,1].set_title('recall')
+		ax[3].hist(recall,range=(0,1))
+		ax[3].set_title('recall')
 		out = "results/alpha_" + str(alpha) + ".png"
 		P.savefig(out)
