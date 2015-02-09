@@ -3,15 +3,16 @@ import numpy as np
 import matplotlib.pyplot as P
 import os 
 from os import path 
-
-dirc = '/home/thejas/Documents/Python/regularization-params/output'
+import seaborn as sns 	
+dirc = '/home/thejas/Documents/Python/regularization-params/op'
 files = os.listdir(dirc)
 for fi in files:
 #for c in range(3,-4,-1):
 	#alpha = 10**c
 	alpha = fi.split('_')[1].split('.csv')[0]
 	#n = "output/alpha_" + str(alpha) + ".csv"
-	with open(fi,'r') as f:
+	fip = dirc  + "/" + fi
+	with open(fip,'r') as f:
 		spamreader = csv.reader(f, delimiter=' ', quotechar='|')
 		f1 = []
 		accuracy = []
@@ -32,19 +33,24 @@ for fi in files:
 		accuracy = np.array(accuracy)
 		precision = np.array(precision)
 		recall = np.array(recall)
-		f, ax = P.subplots(4,sharex=True)
+		f, ax1 = P.subplots(4,figsize=(8, 8),sharex=True)
 		title = 'Alpha ' + str(alpha)
 		P.suptitle(title)
-		ax[0].hist(f1,range=(0,1))
-		ax[0].set_title('F1 Measure')
+		sns.kdeplot(f1,shade=True,ax=ax1[0])
+		#ax[0].hist(f1,range=(.75,.98))
+		ax1[0].set_title('F1 Measure')
 
-		ax[1].hist(accuracy,range=(0,1))
-		ax[1].set_title('accuracy')
+		sns.kdeplot(accuracy,ax=ax1[1])
+		#ax[1].hist(accuracy,range=(.75,.98))
+		ax1[1].set_title('accuracy')
 
-		ax[2].hist(precision,range=(0,1))
-		ax[2].set_title('precision')
+		sns.kdeplot(precision,ax=ax1[2])
+		#ax[2].hist(precision,range=(.75,.98))
+		ax1[2].set_title('precision')
 
-		ax[3].hist(recall,range=(0,1))
-		ax[3].set_title('recall')
-		out = "results/alpha_" + str(alpha) + ".png"
+		sns.kdeplot(recall,ax=ax1[3])
+		#ax[3].hist(recall,range=(.75,.98))
+		ax1[3].set_title('recall')
+		out = "results_focus_2/alpha_" + str(alpha) + ".png"
 		P.savefig(out)
+		
