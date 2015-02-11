@@ -20,10 +20,19 @@ files = os.listdir(dirc)
 fil = list(enumerate(files))
 f, axf = P.subplots(5,4,sharex=True)
 P.suptitle("F1")	
-f1_t = []
-acc_t = []
-prec_t = []
-rec_t = []
+f1_t        	=   []
+acc_t      		=   []
+prec_t     		=   []
+rec_t      		=   []
+
+f1_mean_t   	=   []
+acc_mean_t  	=   []
+prec_mean_t 	=   []
+rec_mean_t  	=   []
+f1_precentile	=	[]
+acc_precentile	=	[]
+prec_precentile	=	[]
+rec_precentile	=	[]
 for nu,fi in fil:
 #for c in range(3,-4,-1):
 	#alpha = 10**c
@@ -59,7 +68,14 @@ for nu,fi in fil:
 		accuracy_mean = np.mean(accuracy)
 		precision_mean = np.mean(precision)
 		recall_mean = np.mean(recall)
-		print f1_mean
+		f1_mean_t.append(f1_mean)
+		acc_mean_t.append(accuracy_mean)
+		prec_mean_t.append(precision_mean)
+		rec_mean_t.append(recall_mean)
+		f1_precentile.append((np.percentile(f1,25),np.percentile(f1,75)))
+		acc_precentile.append((np.percentile(accuracy,25),np.percentile(accuracy,75)))
+		prec_precentile.append((np.percentile(precision,25),np.percentile(precision,75)))
+		rec_precentile.append((np.percentile(recall,25),np.percentile(recall,75)))
 		# Focus_3 
 		'''
 		axf[nu%5][nu/5].set_title('Alpha ' + str(alpha))
@@ -106,14 +122,22 @@ out = "results_focus_3/accuracy.jpg"
 P.savefig(out)'''
 out = "results_focus_3/F1.jpg"
 P.savefig(out)
-All = (f1_t,acc_t,prec_t,rec_t)
+All 			= (f1_t,acc_t,prec_t,rec_t)
+All_mean 		= (f1_mean_t,acc_mean_t,prec_mean_t,rec_mean_t)
+All_precentiles = (f1_precentile,acc_precentile,prec_precentile,rec_precentile)
 for x in range(0,4):
-	now = All[x]
-	f, axf = P.subplots(5,4,sharex=True)
+	now 		= All[x]
+	f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)
 	P.suptitle(check(x))
+	P.tight_layout()
+	now_mean 	= All_mean[x]
+	now_precent = All_precentiles[x]
 	for y in range(0,20):
 		cu = now[y]
 		sns.kdeplot(cu,ax=axf[y%5][y/5])
+		axf[y%5][y/5].axvline(now_mean[y], ls="--", linewidth=1.5)
+		axf[y%5][y/5].axvline(now_precent[y][0], ls="-", linewidth=1.5,color="black")
+		axf[y%5][y/5].axvline(now_precent[y][1], ls="-", linewidth=1.5,color="black")
 	out = "results_focus_3/" + check(x) + ".jpg"
 	P.savefig(out)
 
