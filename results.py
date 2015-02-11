@@ -4,6 +4,7 @@ import matplotlib.pyplot as P
 import os 
 from os import path 
 import seaborn as sns 	
+import matplotlib.text as txt
 def check(x):
 	if x == 0:
 		return "F1"
@@ -17,6 +18,7 @@ def check(x):
 		return str(0)
 dirc = '/home/thejas/Documents/Python/regularization-params/op'
 files = os.listdir(dirc)
+files.sort()
 fil = list(enumerate(files))
 f, axf = P.subplots(5,4,sharex=True)
 P.suptitle("F1")	
@@ -24,7 +26,7 @@ f1_t        	=   []
 acc_t      		=   []
 prec_t     		=   []
 rec_t      		=   []
-
+Alpha_vals		=	[]
 f1_mean_t   	=   []
 acc_mean_t  	=   []
 prec_mean_t 	=   []
@@ -39,6 +41,7 @@ for nu,fi in fil:
 	alpha = fi.split('_')[1].split('.csv')[0]
 	#n = "output/alpha_" + str(alpha) + ".csv"
 	fip = dirc  + "/" + fi
+	Alpha_vals.append(float(alpha))
 	with open(fip,'r') as f:
 		spamreader = csv.reader(f, delimiter=' ', quotechar='|')
 		f1 = []
@@ -134,10 +137,17 @@ for x in range(0,4):
 	now_precent = All_precentiles[x]
 	for y in range(0,20):
 		cu = now[y]
-		sns.kdeplot(cu,ax=axf[y%5][y/5])
+		sns.kdeplot(cu,ax=axf[y%5][y/5],clip=(.75,.9))
 		axf[y%5][y/5].axvline(now_mean[y], ls="--", linewidth=1.5)
 		axf[y%5][y/5].axvline(now_precent[y][0], ls="-", linewidth=1.5,color="black")
 		axf[y%5][y/5].axvline(now_precent[y][1], ls="-", linewidth=1.5,color="black")
+		axf[y%5][y/5].set_title("C="+"%.3f" % (float(Alpha_vals[y])**-1))
+		text = '$\mu=%.2f$\n$\mathrm{25}=%.2f$\n$\mathrm{75}=%.2f$'%(float(now_mean[y]), float(now_precent[y][0]),float(now_precent[y][1]))
+		props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+		axf[y%5][y/5].text(0.05, 0.95, text, transform=axf[y%5][y/5].transAxes, fontsize=14,
+        verticalalignment='top', bbox=props)
+        print 'Done!'
+		#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
 	out = "results_focus_3/" + check(x) + ".jpg"
 	P.savefig(out)
 
