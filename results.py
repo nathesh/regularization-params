@@ -142,7 +142,7 @@ for x in range(0,4):
 		axf[y%5][y/5].axvline(now_precent[y][0], ls="-", linewidth=1.5,color="black")
 		axf[y%5][y/5].axvline(now_precent[y][1], ls="-", linewidth=1.5,color="black")
 		axf[y%5][y/5].set_title("C="+"%.3f" % (float(Alpha_vals[y])**-1))
-		text = '$\mu=%.2f$\n$\mathrm{25}=%.2f$\n$\mathrm{75}=%.2f$'%(float(now_mean[y]), float(now_precent[y][0]),float(now_precent[y][1]))
+		text = '$\mu=%.2f$\n(%.2f, %.2f)'%(float(now_mean[y]), float(now_precent[y][0]),float(now_precent[y][1]))
 		props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
 		axf[y%5][y/5].text(0.05, 0.95, text, transform=axf[y%5][y/5].transAxes, fontsize=14,
         verticalalignment='top', bbox=props)
