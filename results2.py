@@ -19,33 +19,36 @@ def check(x):
 dirc = '/home/thejas/Documents/Python/regularization-params/output_T2'
 files = os.listdir(dirc)
 files.sort()
+files = files[54:60] + files[:54]
 fil = list(enumerate(files))
 f, axf = P.subplots(5,4,sharex=True)
 P.suptitle("F1")	
-f1_t        	=   []
-acc_t      		=   []
-prec_t     		=   []
-rec_t      		=   []
 
-Alpha_vals		=	[]
-
-f1_mean_t   	=   []
-acc_mean_t  	=   []
-prec_mean_t 	=   []
-rec_mean_t  	=   []
-
-f1_precentile	=	[]
-acc_precentile	=	[]
-prec_precentile	=	[]
-rec_precentile	=	[]
 for num in range(0,3):
 	f_fil = files[num*20:(num+1)*20]
 	fil = list(enumerate(f_fil))
 	print len(fil)
+	Alpha_vals		=	[]
+	f1_t        	=   []
+	acc_t      		=   []
+	prec_t     		=   []
+	rec_t      		=   []
+
+
+	f1_mean_t   	=   []
+	acc_mean_t  	=   []
+	prec_mean_t 	=   []
+	rec_mean_t  	=   []
+
+	f1_precentile	=	[]
+	acc_precentile	=	[]
+	prec_precentile	=	[]
+	rec_precentile	=	[]
 	for nu,fi in fil:
 	#for c in range(3,-4,-1):
 		#alpha = 10**c
 		alpha = fi.split('_')[1].split('.csv')[0]
+		
 		#n = "output/alpha_" + str(alpha) + ".csv"
 		fip = dirc  + "/" + fi
 		Alpha_vals.append(float(alpha))
