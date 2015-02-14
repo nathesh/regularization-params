@@ -70,12 +70,8 @@ def trails(data, target_vals, vectorizer, bs, ml, alpha_vals):
             alpha_vals.append(a)
     threads = []
     for alpha in alpha_vals:
-        t = threading.Thread(
-            target=trails_bs, args=(data, target_vals, vectorizer, bs, ml, alpha))
-        threads.append(t)
-        t.start()
-        #trails_bs(data, target_vals, vectorizer, bs, ml, alpha)
-
+        trails_bs(data, target_vals, vectorizer, bs, ml, alpha)
+         
 def output(scores, alpha):
     print "in output"
     name = 'output_T/alpha_' + str(alpha) + '.csv'
@@ -91,8 +87,8 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     data = data(0)  # input
     data, target_vals, vectorizer, length = clean(data)
     bs = cv.Bootstrap(length, n_iter=100)
-    #alpha_vals = np.linspace(.001, .00001, 60)  # input
-    alpha_vals = [.0001]
+    alpha_vals = np.linspace(.001, .00001, 60)  # input
+    #alpha_vals = [.0001]
     trails(data, target_vals, vectorizer, bs, 0, alpha_vals)
     print "Done?"
 
