@@ -16,9 +16,12 @@ def check(x):
 		return "recall"
 	else:
 		return str(0)
-dirc = '/home/thejas/Documents/Python/regularization-params/op'
+
+
+dirc = '/home/thejas/Documents/Python/regularization-params/output_T3'
 files = os.listdir(dirc)
 files.sort()
+files = files[19:] + files[:19]
 fil = list(enumerate(files))
 f, axf = P.subplots(5,4,sharex=True)
 P.suptitle("F1")	
@@ -87,7 +90,7 @@ for nu,fi in fil:
 		axr[nu%5][nu/5].set_title('Alpha ' + str(alpha))
 		'''
 		
-		sns.kdeplot(f1,ax=axf[nu%5][nu/5])
+		
 		'''
 		sns.kdeplot(accuracy,ax=axa[nu%5][nu/5])
 		sns.kdeplot(precision,ax=axf[nu%5][nu/5])
@@ -123,12 +126,11 @@ out = "results_focus_3/precision.jpg"
 P.savefig(out)
 out = "results_focus_3/accuracy.jpg"
 P.savefig(out)'''
-out = "results_focus_3/F1.jpg"
-P.savefig(out)
 All 			= (f1_t,acc_t,prec_t,rec_t)
 All_mean 		= (f1_mean_t,acc_mean_t,prec_mean_t,rec_mean_t)
 All_precentiles = (f1_precentile,acc_precentile,prec_precentile,rec_precentile)
 for x in range(0,4):
+	print 'x = ', x
 	now 		= All[x]
 	f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)
 	P.suptitle(check(x))
@@ -137,7 +139,9 @@ for x in range(0,4):
 	now_precent = All_precentiles[x]
 	for y in range(0,20):
 		cu = now[y]
-		sns.kdeplot(cu,ax=axf[y%5][y/5],clip=(.75,.9))
+		print 'y =',y,np.min(cu),np.max(cu)
+		sns.kdeplot(cu,ax=axf[y%5][y/5])
+		print "Here?"
 		axf[y%5][y/5].axvline(now_mean[y], ls="--", linewidth=1.5)
 		axf[y%5][y/5].axvline(now_precent[y][0], ls="-", linewidth=1.5,color="black")
 		axf[y%5][y/5].axvline(now_precent[y][1], ls="-", linewidth=1.5,color="black")
@@ -148,7 +152,7 @@ for x in range(0,4):
         verticalalignment='top', bbox=props)
         print 'Done!'
 		#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
-	out = "results_focus_3/" + check(x) + ".jpg"
+	out = "results_focus_5/" + check(x) + ".jpg"
 	P.savefig(out)
 
 def check(x):

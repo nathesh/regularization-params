@@ -16,10 +16,10 @@ def check(x):
 		return "recall"
 	else:
 		return str(0)
-dirc = '/home/thejas/Documents/Python/regularization-params/output_T2'
+dirc = '/home/thejas/Documents/Python/regularization-params/output_la'
 files = os.listdir(dirc)
 files.sort()
-files = files[54:60] + files[:54]
+#files = files[54:60] + files[:54]
 fil = list(enumerate(files))
 f, axf = P.subplots(5,4,sharex=True)
 P.suptitle("F1")	
@@ -149,7 +149,11 @@ for num in range(0,3):
 		now_precent = All_precentiles[x]
 		for y in range(0,20):
 			cu = now[y]
-			sns.kdeplot(cu,ax=axf[y%5][y/5],clip=(.75,.9))
+			
+			if x == 3:
+				sns.kdeplot(cu,ax=axf[y%5][y/5])
+			else:
+				sns.kdeplot(cu,ax=axf[y%5][y/5])
 			axf[y%5][y/5].axvline(now_mean[y], ls="--", linewidth=1.5)
 			axf[y%5][y/5].axvline(now_precent[y][0], ls="-", linewidth=1.5,color="black")
 			axf[y%5][y/5].axvline(now_precent[y][1], ls="-", linewidth=1.5,color="black")
@@ -160,6 +164,6 @@ for num in range(0,3):
 	        verticalalignment='top', bbox=props)
 	        print 'Done!'
 			#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
-		out = "results_focus_4/" + check(x) +"_" + str(num) + ".jpg"
+		out = "results_focus_6/" + check(x) +"_" + str(num) + ".jpg"
 		P.savefig(out)
 

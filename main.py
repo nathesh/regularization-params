@@ -74,7 +74,7 @@ def trails(data, target_vals, vectorizer, bs, ml, alpha_vals):
          
 def output(scores, alpha):
     print "in output"
-    name = 'output_T/alpha_' + str(alpha) + '.csv'
+    name = 'output_T3/alpha_' + str(alpha) + '.csv'
     with open(name, 'w') as out:
         csv_out = csv.writer(out)
         csv_out.writerow(('f1', 'accuracy', 'precision', 'recall'))
@@ -87,7 +87,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     data = data(0)  # input
     data, target_vals, vectorizer, length = clean(data)
     bs = cv.Bootstrap(length, n_iter=100)
-    alpha_vals = np.linspace(.001, .00001, 60)  # input
+    alpha_vals = np.linspace(.000001,.01, 20)  # input
     #alpha_vals = [.0001]
     trails(data, target_vals, vectorizer, bs, 0, alpha_vals)
     print "Done?"
@@ -106,3 +106,4 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
 10. Alpha value linspace around .0001 -> DONE
 11. Run the job in Condor 
 '''
+    
