@@ -12,7 +12,7 @@ import threading
 
 def data(input):  # return the data
     if input == 0:
-        cats = ['alt.atheism', 'soc.religion.christian']
+        cats = ['alt.atheism','sci.space']
         # I got all (train and test)?? remove stuff
         ngs_1 = ngs(subset='all', categories=cats, remove=(
             'headers', 'footers', 'quotes'))
@@ -68,10 +68,11 @@ def trails(data, target_vals, vectorizer, bs, ml, alpha_vals):
         for c in range(3, -4, -1):
             a = 10 ** c
             alpha_vals.append(a)
-    threads = []
+
     for alpha in alpha_vals:
         trails_bs(data, target_vals, vectorizer, bs, ml, alpha)
-         
+
+
 def output(scores, alpha):
     print "in output"
     name = 'output_T3/alpha_' + str(alpha) + '.csv'
@@ -87,23 +88,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     data = data(0)  # input
     data, target_vals, vectorizer, length = clean(data)
     bs = cv.Bootstrap(length, n_iter=100)
-    alpha_vals = np.linspace(.000001,.01, 20)  # input
+    alpha_vals = np.linspace(.000001, .01, 20)  # input
     #alpha_vals = [.0001]
     trails(data, target_vals, vectorizer, bs, 0, alpha_vals)
     print "Done?"
-
-
-''' TO DO 
-1. fix the vectorizer -> DONE
-2. debug  - DONE
-3. make the plots -> Done 
-4. Modualize the code -> Done 
-5. PEP8 - DONE 
-6. Finish the plots -> DONE 
-7. Better cats balanced and higher accuary (varied dataset)
-8. Add the inputs  -> DONE
-9. bins and x axis -> the same DONE
-10. Alpha value linspace around .0001 -> DONE
-11. Run the job in Condor 
-'''
-    

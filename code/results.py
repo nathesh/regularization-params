@@ -18,10 +18,10 @@ def check(x):
 		return str(0)
 
 
-dirc = '/home/thejas/Documents/Python/regularization-params/output_T3'
+dirc = '/home/thejas/Documents/Python/regularization-params/output_final'
 files = os.listdir(dirc)
 files.sort()
-files = files[19:] + files[:19]
+files = files[17:] + files[:17]
 fil = list(enumerate(files))
 f, axf = P.subplots(5,4,sharex=True)
 P.suptitle("F1")	
@@ -152,7 +152,7 @@ for x in range(0,4):
         verticalalignment='top', bbox=props)
         print 'Done!'
 		#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
-	out = "results_focus_5/" + check(x) + ".jpg"
+	out = "results_focus_final/" + check(x) + ".jpg"
 	P.savefig(out)
 
 def check(x):
