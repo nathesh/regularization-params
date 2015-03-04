@@ -1,3 +1,4 @@
+#!/usr/local/bin/python
 # all the imports
 from sklearn.datasets import fetch_20newsgroups as ngs
 from sklearn import cross_validation as cv
@@ -75,7 +76,7 @@ def trails(data, target_vals, vectorizer, bs, ml, alpha_vals):
 
 def output(scores, alpha):
     print "in output"
-    name = 'output_T3/alpha_' + str(alpha) + '.csv'
+    name = '../Athvs.Sci/output_1/alpha_' + str(alpha) + '.csv'
     with open(name, 'w') as out:
         csv_out = csv.writer(out)
         csv_out.writerow(('f1', 'accuracy', 'precision', 'recall'))
