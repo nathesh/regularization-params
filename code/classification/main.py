@@ -72,6 +72,7 @@ def trails_bs(data, target_vals, vectorizer, bs, ml, alpha):
     scores = []
     for train_index, test_index in bs:
         train = data[train_index]
+        train = train.encode('latin-1')
         test = data[test_index]
         train_target_vals = target_vals[train_index]
         test_traget_vals = target_vals[test_index]
