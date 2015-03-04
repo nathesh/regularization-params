@@ -39,7 +39,7 @@ def data(input):  # return the data
 
             fin = open(s_c+path, 'r') 
             data = fin.read() # need to change the where the is stored 
-            dt.add(data,0) # data and target
+            dt.add(data.decode('latin1'),0) # data and target
             target = 0
 
         for f in files:
@@ -48,7 +48,7 @@ def data(input):  # return the data
             for path in paths:
                 fin = open(s_c+path, 'r') 
                 data = fin.read() # need to c
-                dt.add(data,1)
+                dt.add(data.decode('latin1'),1)
                 target = 1
         return dt
 
@@ -72,6 +72,7 @@ def trails_bs(data, target_vals, vectorizer, bs, ml, alpha):
     scores = []
     for train_index, test_index in bs:
         train = data[train_index]
+	#train = train.encode('latin-1')
         test = data[test_index]
         train_target_vals = target_vals[train_index]
         test_traget_vals = target_vals[test_index]
