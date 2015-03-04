@@ -1,3 +1,4 @@
+#!/usr/local/bin/python
 # all the imports
 from sklearn.datasets import fetch_20newsgroups as ngs
 from sklearn import cross_validation as cv
@@ -7,17 +8,49 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import metrics
 import csv
 import sys
+import os 
 import threading
 
+class ip:
+    data = []
+    kv = {}
+    target = []
+    def add(self,dt,target):
+        self.data.append(dt)
+        self.target.append(target)
 
 def data(input):  # return the data
     if input == 0:
-        cats = ['alt.atheism', 'soc.religion.christian']
+        cats = ['alt.atheism','sci.space']
         # I got all (train and test)?? remove stuff
         ngs_1 = ngs(subset='all', categories=cats, remove=(
             'headers', 'footers', 'quotes'))
-        return ngs_1
+        return ngs_1    
+    elif input == 1:
+        #f = open("../../data/20_newsgroups/alt.atheism/49960",'r')
+        s = '../../data/20_newsgroups/'
+        files = os.listdir(s)
+        files.sort()
+        fi = files.pop(0)
+        s_c = s+fi+'/'
+        paths = os.listdir(s_c) 
+        dt = ip()
+        for path in paths:
 
+            fin = open(s_c+path, 'r') 
+            data = fin.read() # need to change the where the is stored 
+            dt.add(data,0) # data and target
+            target = 0
+
+        for f in files:
+            s_c = s + f+'/'
+            paths= os.listdir(s_c)
+            for path in paths:
+                fin = open(s_c+path, 'r') 
+                data = fin.read() # need to c
+                dt.add(data,1)
+                target = 1
+        return dt
 
 def clean(input):  # return data, target, vectorizer and length
     # covert ngs.data into a numpy array and getting the length
@@ -68,17 +101,14 @@ def trails(data, target_vals, vectorizer, bs, ml, alpha_vals):
         for c in range(3, -4, -1):
             a = 10 ** c
             alpha_vals.append(a)
-    threads = []
+
     for alpha in alpha_vals:
-        t = threading.Thread(
-            target=trails_bs, args=(data, target_vals, vectorizer, bs, ml, alpha))
-        threads.append(t)
-        t.start()
-        #trails_bs(data, target_vals, vectorizer, bs, ml, alpha)
+        trails_bs(data, target_vals, vectorizer, bs, ml, alpha)
+
 
 def output(scores, alpha):
     print "in output"
-    name = 'output_T/alpha_' + str(alpha) + '.csv'
+    name = '../Athvs.Sci/output_1/alpha_' + str(alpha) + '.csv'
     with open(name, 'w') as out:
         csv_out = csv.writer(out)
         csv_out.writerow(('f1', 'accuracy', 'precision', 'recall'))
@@ -88,25 +118,19 @@ def output(scores, alpha):
 if __name__ == "__main__":  # inputs -> (dataset,model used)
     # setting up bootstrap
     # getting a deprecationwarning => need to look into it
-    data = data(0)  # input
+    inp = raw_input("Type 0 for athesim vs. religion\nType 1 for athesim vs. all\nThen press Enter...")
+
+    data = data(int(inp))  # input
     data, target_vals, vectorizer, length = clean(data)
     bs = cv.Bootstrap(length, n_iter=100)
-    #alpha_vals = np.linspace(.001, .00001, 60)  # input
-    alpha_vals = [.0001]
+    alpha_vals = np.linspace(.000001, .01, 20)  # input
+    #alpha_vals = [.0001]
     trails(data, target_vals, vectorizer, bs, 0, alpha_vals)
     print "Done?"
 
 
-''' TO DO 
-1. fix the vectorizer -> DONE
-2. debug  - DONE
-3. make the plots -> Done 
-4. Modualize the code -> Done 
-5. PEP8 - DONE 
-6. Finish the plots -> DONE 
-7. Better cats balanced and higher accuary (varied dataset)
-8. Add the inputs  -> DONE
-9. bins and x axis -> the same DONE
-10. Alpha value linspace around .0001 -> DONE
-11. Run the job in Condor 
-'''
+
+
+
+
+
