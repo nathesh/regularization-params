@@ -92,7 +92,11 @@ def data(input):  # return the data
             for path in paths:
                 fin = open(s_c+path, 'r') 
                 data = fin.read() # need to c
-                dt.add(data.decode('latin1'),1)
+                data = (data.decode('latin1'))
+                data = [dt.strip_newsgroup_header(text) for text in data]
+                data = [dt.strip_newsgroup_footer(text) for text in data]            
+                data = [dt.strip_newsgroup_quoting(text) for text in data]
+                dt.add(data,1)
                 target = 1
         return dt
 
