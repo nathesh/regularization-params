@@ -19,45 +19,44 @@ class ip:
     def add(self,dt,target):
         self.data.append(dt)
         self.target.append(target)
-    def strip_newsgroup_header(text):
-    """
-    Given text in "news" format, strip the headers, by removing everything
-    before the first blank line.
-    """
-    _before, _blankline, after = text.partition('\n\n')
-    return after
+    def strip_newsgroup_header(self,text):
+        """
+        Given text in "news" format, strip the headers, by removing everything
+        before the first blank line.
+        """
+        _before, _blankline, after = text.partition('\n\n')
+        return after
 
 
-    def strip_newsgroup_quoting(text):
-    """
-    Given text in "news" format, strip lines beginning with the quote
-    characters > or |, plus lines that often introduce a quoted section
-    (for example, because they contain the string 'writes:'.)
-    """
-    _QUOTE_RE = re.compile(r'(writes in|writes:|wrote:|says:|said:'
-                       r'|^In article|^Quoted from|^\||^>)')
-    good_lines = [line for line in text.split('\n')
-                  if not _QUOTE_RE.search(line)]
-    return '\n'.join(good_lines)
+    def strip_newsgroup_quoting(self,text):
+        """
+        Given text in "news" format, strip lines beginning with the quote
+        characters > or |, plus lines that often introduce a quoted section
+        (for example, because they contain the string 'writes:'.)
+        """
+        _QUOTE_RE = re.compile(r'(writes in|writes:|wrote:|says:|said:'
+                           r'|^In article|^Quoted from|^\||^>)')
+        good_lines = [line for line in text.split('\n')
+                      if not _QUOTE_RE.search(line)]
+        return '\n'.join(good_lines)
 
-    def strip_newsgroup_footer(text):
-    """
-    Given text in "news" format, attempt to remove a signature block.
+    def strip_newsgroup_footer(self,text):
+        """
+        Given text in "news" format, attempt to remove a signature block.
+        As a rough heuristic, we assume that signatures are set apart by either
+        a blank line or a line made of hyphens, and that it is the last such line
+        in the file (disregarding blank lines at the end).
+        """
+        lines = text.strip().split('\n')
+        for line_num in range(len(lines) - 1, -1, -1):
+            line = lines[line_num]
+            if line.strip().strip('-') == '':
+                break
 
-    As a rough heuristic, we assume that signatures are set apart by either
-    a blank line or a line made of hyphens, and that it is the last such line
-    in the file (disregarding blank lines at the end).
-    """
-    lines = text.strip().split('\n')
-    for line_num in range(len(lines) - 1, -1, -1):
-        line = lines[line_num]
-        if line.strip().strip('-') == '':
-            break
-
-    if line_num > 0:
-        return '\n'.join(lines[:line_num])
-    else:
-        return text
+        if line_num > 0:
+            return '\n'.join(lines[:line_num])
+        else:
+            return text
 
 
 def data(input):  # return the data
@@ -80,7 +79,7 @@ def data(input):  # return the data
 
             fin = open(s_c+path, 'r') 
             data = fin.read() # need to change the where the is stored 
-            data = (data.decode('latin1')
+            data = (data.decode('latin1'))
             data = [dt.strip_newsgroup_header(text) for text in data]
             data = [dt.strip_newsgroup_footer(text) for text in data]            
             data = [dt.strip_newsgroup_quoting(text) for text in data]
@@ -174,10 +173,3 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     #alpha_vals = [.0001]
     trails(data, target_vals, vectorizer, bs, 0, alpha_vals)
     print "Done?"
-
-
-
-
-
-
-
