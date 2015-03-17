@@ -85,11 +85,10 @@ def data(input):  # return the data
             fin = open(s_c+path, 'r') 
             data = fin.read() # need to change the where the is stored 
             data = (data.decode('latin1'))
-
-            data = [dt.strip_newsgroup_header(text) for text in data]
-            data = [dt.strip_newsgroup_footer(text) for text in data]            
-            data = [dt.strip_newsgroup_quoting(text) for text in data]
-            #print data
+	    
+            #data = [dt.strip_newsgroup_header(text) for text in data]
+            #data = [dt.strip_newsgroup_footer(text) for text in data]            
+            #data = [dt.strip_newsgroup_quoting(text) for text in data]       
             dt.add(data,0) # data and target
             target = 0
 
@@ -100,9 +99,9 @@ def data(input):  # return the data
                 fin = open(s_c+path, 'r') 
                 data = fin.read() # need to c
                 data = (data.decode('latin1'))
-                data = [dt.strip_newsgroup_header(text) for text in data]
-                data = [dt.strip_newsgroup_footer(text) for text in data]            
-                data = [dt.strip_newsgroup_quoting(text) for text in data]
+                #data = [dt.strip_newsgroup_header(text) for text in data]
+                #data = [dt.strip_newsgroup_footer(text) for text in data]            
+                #data = [dt.strip_newsgroup_quoting(text) for text in data]
                 dt.add(data,1)
                 target = 1
         return dt
@@ -110,12 +109,12 @@ def data(input):  # return the data
 def clean(input):  # return data, target, vectorizer and length
     # covert ngs.data into a numpy array and getting the length
     length = len(input.data)
-    print type(input.data)
-    data = np.array(input.data)
+    #print (input.data)
+    data_set = np.array(input.data)
     target_vals = np.array(input.target)
     # using the SGD model
     vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 2))
-    return (data, target_vals, vectorizer, length)
+    return (data_set, target_vals, vectorizer, length)
 
 
 def model(type, alpha):
@@ -168,7 +167,7 @@ def trails(data, target_vals, vectorizer, bs, ml, alpha_vals):
 
 def output(scores, alpha):
     print "in output"
-    name = '../Athvs.Sci/output_1/alpha_' + str(alpha) + '.csv'
+    name = '../Athvs.All/output_1/alpha_' + str(alpha) + '.csv'
     with open(name, 'w') as out:
         csv_out = csv.writer(out)
         csv_out.writerow(('f1', 'accuracy', 'precision', 'recall'))
