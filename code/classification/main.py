@@ -12,6 +12,11 @@ import os
 import threading
 import re
 
+'''
+NEED TO FIX strip all of them ...
+'''
+
+
 class ip:
     data = []
     kv = {}
@@ -80,9 +85,11 @@ def data(input):  # return the data
             fin = open(s_c+path, 'r') 
             data = fin.read() # need to change the where the is stored 
             data = (data.decode('latin1'))
+
             data = [dt.strip_newsgroup_header(text) for text in data]
             data = [dt.strip_newsgroup_footer(text) for text in data]            
             data = [dt.strip_newsgroup_quoting(text) for text in data]
+            #print data
             dt.add(data,0) # data and target
             target = 0
 
@@ -103,6 +110,7 @@ def data(input):  # return the data
 def clean(input):  # return data, target, vectorizer and length
     # covert ngs.data into a numpy array and getting the length
     length = len(input.data)
+    print type(input.data)
     data = np.array(input.data)
     target_vals = np.array(input.target)
     # using the SGD model
@@ -120,6 +128,8 @@ def trails_bs(data, target_vals, vectorizer, bs, ml, alpha):
     scores = []
     for train_index, test_index in bs:
         train = data[train_index]
+        #print type(train[0])
+
         #train = train.encode('latin1')
         #train = train.encode('latin-1')
         test = data[test_index]
@@ -177,3 +187,4 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     #alpha_vals = [.0001]
     trails(data, target_vals, vectorizer, bs, 0, alpha_vals)
     print "Done?"
+
