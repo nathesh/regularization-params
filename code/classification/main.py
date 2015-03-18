@@ -169,7 +169,7 @@ def trails(data, target_vals, vectorizer, bs, ml, alpha_vals):
 
 def output(scores, alpha):
     print "in output"
-    name = '../../Athvs.All/output_1/alpha_' + str(alpha) + '.csv'
+    name = '../../Athvs.All/output_2/alpha_' + str(alpha) + '.csv'
     with open(name, 'w') as out:
         csv_out = csv.writer(out)
         csv_out.writerow(('f1', 'accuracy', 'precision', 'recall'))
