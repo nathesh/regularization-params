@@ -1,3 +1,4 @@
+#!/usr/local/bin/python
 import numpy as np 
 import threading 
 from subprocess import call
