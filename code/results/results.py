@@ -18,7 +18,7 @@ def check(x):
 		return str(0)
 
 
-dirc = '/home/thejas/Documents/Python/regularization-params/output_final'
+dirc = '../../Athvs.All/output_3'
 files = os.listdir(dirc)
 files.sort()
 files = files[17:] + files[:17]
@@ -152,7 +152,7 @@ for x in range(0,4):
         verticalalignment='top', bbox=props)
         print 'Done!'
 		#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
-	out = "results_focus_final/" + check(x) + ".jpg"
+	out = "../../Athvs.All/results_2/" + check(x) + ".jpg"
 	P.savefig(out)
 
 def check(x):
