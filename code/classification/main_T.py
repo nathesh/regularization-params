@@ -189,7 +189,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     bs = cv.Bootstrap(length, n_iter=100)
     alpha_vals = np.linspace(.000001, .01, 20)  # input
     #alpha_vals = [.0001]
-    alpha = sys.argv[1]
+    alpha = float(sys.argv[1])
     trails_bs(data, target_vals, vectorizer, bs, 0, alpha)
     print "Done?"
 
