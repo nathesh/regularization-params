@@ -86,9 +86,9 @@ def data(input):  # return the data
             data = fin.read() # need to change the where the is stored 
             data = (data.decode('latin1'))
 	    
-            #data = [dt.strip_newsgroup_header(text) for text in data]
-            #data = [dt.strip_newsgroup_footer(text) for text in data]            
-            #data = [dt.strip_newsgroup_quoting(text) for text in data]       
+            data = dt.strip_newsgroup_header(data)
+            data = dt.strip_newsgroup_footer(data)
+            data = dt.strip_newsgroup_quoting(data)
             dt.add(data,0) # data and target
             target = 0
         num = 0
@@ -100,9 +100,9 @@ def data(input):  # return the data
                     fin = open(s_c+path, 'r') 
                     data = fin.read() # need to c
                     data = (data.decode('latin1'))
-                    #data = [dt.strip_newsgroup_header(text) for text in data]
-                    #data = [dt.strip_newsgroup_footer(text) for text in data]            
-                    #data = [dt.strip_newsgroup_quoting(text) for text in data]
+                    data = dt.strip_newsgroup_header(data)
+                    data = dt.strip_newsgroup_footer(data)
+                    data = dt.strip_newsgroup_quoting(data)
                     dt.add(data,1)
                     target = 1
             num +=1
@@ -169,7 +169,7 @@ def trails(data, target_vals, vectorizer, bs, ml, alpha_vals):
 
 def output(scores, alpha):
     print "in output"
-    name = '../../Athvs.All/output_2/alpha_' + str(alpha) + '.csv'
+    name = '../../Athvs.All/<output_2></output_2>/alpha_' + str(alpha) + '.csv'
     with open(name, 'w') as out:
         csv_out = csv.writer(out)
         csv_out.writerow(('f1', 'accuracy', 'precision', 'recall'))
@@ -189,3 +189,12 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     trails(data, target_vals, vectorizer, bs, 0, alpha_vals)
     print "Done?"
 
+'''
+min df: 3 
+reduce feature space: 50,000 
+create a subprocess
+'''
+
+''' Svm -> SGD with hinge loss; L2 norm 
+    SGD
+'''
