@@ -11,6 +11,6 @@ f = open('run.py','w')
 for alpha in alpha_vals:
 	t = threading.Thread(target=worker, args=(alpha,))
 	threads.append(t)
-    t.start()
+	t.start()
 	#f.write("call([python,main.py,"+ str(alpha) + "]"+ "\n")
 
