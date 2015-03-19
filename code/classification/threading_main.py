@@ -7,6 +7,7 @@ def worker(num):
 
 
 alpha_vals = np.linspace(.000001, .01, 20)  # input
+threads = []
 f = open('run.py','w')
 for alpha in alpha_vals:
 	t = threading.Thread(target=worker, args=(alpha,))
