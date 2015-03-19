@@ -8,25 +8,20 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import metrics
 import csv
 import sys
-import os 
-import threading
+import os
+#import threading
 import re
-import sys 
-
-
-'''
-NEED TO FIX strip all of them ...
-'''
-
 
 class ip:
     data = []
     kv = {}
     target = []
-    def add(self,dt,target):
+
+    def add(self, dt, target):
         self.data.append(dt)
         self.target.append(target)
-    def strip_newsgroup_header(self,text):
+
+    def strip_newsgroup_header(self, text):
         """
         Given text in "news" format, strip the headers, by removing everything
         before the first blank line.
@@ -34,20 +29,19 @@ class ip:
         _before, _blankline, after = text.partition('\n\n')
         return after
 
-
-    def strip_newsgroup_quoting(self,text):
+    def strip_newsgroup_quoting(self, text):
         """
         Given text in "news" format, strip lines beginning with the quote
         characters > or |, plus lines that often introduce a quoted section
         (for example, because they contain the string 'writes:'.)
         """
         _QUOTE_RE = re.compile(r'(writes in|writes:|wrote:|says:|said:'
-                           r'|^In article|^Quoted from|^\||^>)')
+                               r'|^In article|^Quoted from|^\||^>)')
         good_lines = [line for line in text.split('\n')
                       if not _QUOTE_RE.search(line)]
         return '\n'.join(good_lines)
 
-    def strip_newsgroup_footer(self,text):
+    def strip_newsgroup_footer(self, text):
         """
         Given text in "news" format, attempt to remove a signature block.
         As a rough heuristic, we assume that signatures are set apart by either
@@ -68,47 +62,48 @@ class ip:
 
 def data(input):  # return the data
     if input == 0:
-        cats = ['alt.atheism','sci.space']
+        cats = ['alt.atheism', 'sci.space']
         # I got all (train and test)?? remove stuff
         ngs_1 = ngs(subset='all', categories=cats, remove=(
             'headers', 'footers', 'quotes'))
-        return ngs_1    
+        return ngs_1
     elif input == 1:
         #f = open("../../data/20_newsgroups/alt.atheism/49960",'r')
         s = '../../data/20_newsgroups/'
         files = os.listdir(s)
         files.sort()
         fi = files.pop(0)
-        s_c = s+fi+'/'
-        paths = os.listdir(s_c) 
+        s_c = s + fi + '/'
+        paths = os.listdir(s_c)
         dt = ip()
         for path in paths:
 
-            fin = open(s_c+path, 'r') 
-            data = fin.read() # need to change the where the is stored 
+            fin = open(s_c + path, 'r')
+            data = fin.read()  # need to change the where the is stored
             data = (data.decode('latin1'))
-	    
+
             data = dt.strip_newsgroup_header(data)
             data = dt.strip_newsgroup_footer(data)
             data = dt.strip_newsgroup_quoting(data)
-            dt.add(data,0) # data and target
+            dt.add(data, 0)  # data and target
             target = 0
         num = 0
         for f in files:
-            if num <3:
-                s_c = s + f+'/'
-                paths= os.listdir(s_c)
+            if num < 3:
+                s_c = s + f + '/'
+                paths = os.listdir(s_c)
                 for path in paths:
-                    fin = open(s_c+path, 'r') 
-                    data = fin.read() # need to c
+                    fin = open(s_c + path, 'r')
+                    data = fin.read()  # need to c
                     data = (data.decode('latin1'))
                     data = dt.strip_newsgroup_header(data)
                     data = dt.strip_newsgroup_footer(data)
                     data = dt.strip_newsgroup_quoting(data)
-                    dt.add(data,1)
+                    dt.add(data, 1)
                     target = 1
-            num +=1
+            num += 1
         return dt
+
 
 def clean(input):  # return data, target, vectorizer and length
     # covert ngs.data into a numpy array and getting the length
@@ -117,7 +112,8 @@ def clean(input):  # return data, target, vectorizer and length
     data_set = np.array(input.data)
     target_vals = np.array(input.target)
     # using the SGD model
-    vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 2),min_df=3,max_features=50000)
+    vectorizer = TfidfVectorizer(
+        stop_words='english', ngram_range=(1, 2), min_df=3, max_features=50000)
     return (data_set, target_vals, vectorizer, length)
 
 
@@ -171,7 +167,8 @@ def trails(data, target_vals, vectorizer, bs, ml, alpha_vals):
 
 def output(scores, alpha):
     print "in output"
-    name = '../../Athvs.All/output_1/alpha_' + str(alpha) + '.csv' # need to change this 
+    name = '../../Athvs.All/output_1/alpha_' + \
+        str(alpha) + '.csv'  # need to change this
 
     with open(name, 'w') as out:
         csv_out = csv.writer(out)
@@ -189,7 +186,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     bs = cv.Bootstrap(length, n_iter=100)
     alpha_vals = np.linspace(.000001, .01, 20)  # input
     #alpha_vals = [.0001]
-    
+
     trails(data, target_vals, vectorizer, bs, 0, alpha_vals)
     print "Done?"
 
