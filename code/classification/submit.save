@@ -1,0 +1,13 @@
+  ####################                                                    
+  # 
+  # Example 1                                                            
+  # Simple condor job description file                                    
+  #                                                                       
+  ####################                                                    
+                                                                          
+Executable   = threading_main.py
+    = vanilla
+Log          = foo2.log                                                    
+error 	     = error2.err
+
+Queue

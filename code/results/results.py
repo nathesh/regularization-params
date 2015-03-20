@@ -18,7 +18,7 @@ def check(x):
 		return str(0)
 
 
-dirc = '../../Athvs.All/output_3'
+dirc = '../../Athvs.All/output_T'
 files = os.listdir(dirc)
 files.sort()
 files = files[17:] + files[:17]
@@ -137,7 +137,7 @@ for x in range(0,4):
 	P.tight_layout()
 	now_mean 	= All_mean[x]
 	now_precent = All_precentiles[x]
-	for y in range(0,20):
+	for y in range(0,18):
 		cu = now[y]
 		print 'y =',y,np.min(cu),np.max(cu)
 		sns.kdeplot(cu,ax=axf[y%5][y/5])
@@ -152,7 +152,7 @@ for x in range(0,4):
         verticalalignment='top', bbox=props)
         print 'Done!'
 		#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
-	out = "../../Athvs.All/results_2/" + check(x) + ".jpg"
+	out = "../../Athvs.All/results_T/" + check(x) + ".jpg"
 	P.savefig(out)
 
 def check(x):
