@@ -83,77 +83,44 @@ for nu,fi in fil:
 		prec_precentile.append((np.percentile(precision,25),np.percentile(precision,75)))
 		rec_precentile.append((np.percentile(recall,25),np.percentile(recall,75)))
 		# Focus_3 
-		'''
-		axf[nu%5][nu/5].set_title('Alpha ' + str(alpha))
-		axa[nu%5][nu/5].set_title('Alpha ' + str(alpha))
-		axp[nu%5][nu/5].set_title('Alpha ' + str(alpha))
-		axr[nu%5][nu/5].set_title('Alpha ' + str(alpha))
-		'''
-		
-		
-		'''
-		sns.kdeplot(accuracy,ax=axa[nu%5][nu/5])
-		sns.kdeplot(precision,ax=axf[nu%5][nu/5])
-		sns.kdeplot(recall,ax=axf[nu%5][nu/5])
-		'''
-		# This for focus_2
-		'''
-		f, ax1 = P.subplots(4,figsize=(8, 8),sharex=True)
-		title = 'Alpha ' + str(alpha)
-		P.suptitle(title)
-		sns.kdeplot(f1,shade=True,ax=ax1[0])
-		#ax[0].hist(f1,range=(.75,.98))
-		ax1[0].set_title('F1 Measure')
 
-		sns.kdeplot(accuracy,ax=ax1[1])
-		#ax[1].hist(accuracy,range=(.75,.98))
-		ax1[1].set_title('accuracy')
-
-		sns.kdeplot(precision,ax=ax1[2])
-		#ax[2].hist(precision,range=(.75,.98))
-		ax1[2].set_title('precision')
-
-		sns.kdeplot(recall,ax=ax1[3])
-		#ax[3].hist(recall,range=(.75,.98))
-		ax1[3].set_title('recall')
-		out = "results_focus_2/alpha_" + str(alpha) + ".png"
-		P.savefig(out)
-		'''
-'''
-out = "results_focus_3/recall.jpg"
-P.savefig(out)
-out = "results_focus_3/precision.jpg"
-P.savefig(out)
-out = "results_focus_3/accuracy.jpg"
-P.savefig(out)'''
 All 			= (f1_t,acc_t,prec_t,rec_t)
 All_mean 		= (f1_mean_t,acc_mean_t,prec_mean_t,rec_mean_t)
 All_precentiles = (f1_precentile,acc_precentile,prec_precentile,rec_precentile)
 for x in range(0,4):
-	print 'x = ', x
+	print check(x)
+	if x == 3:
+		f, axf 		= P.subplots(3,3,figsize=(16,16),sharex='all',sharey='all',squeeze=False)
+		num_vals = range(0,8)
+		num = 3
+	else:
+		f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)	
+		num_vals = range(0,18)
+		num = 5
 	now 		= All[x]
-	f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)
+	#f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)
 	P.suptitle(check(x))
 	P.tight_layout()
 	now_mean 	= All_mean[x]
 	now_precent = All_precentiles[x]
-	for y in range(0,18):
+	for y in num_vals:
 		cu = now[y]
-		print 'y =',y,np.min(cu),np.max(cu)
-		sns.kdeplot(cu,ax=axf[y%5][y/5])
-		print "Here?"
-		axf[y%5][y/5].axvline(now_mean[y], ls="--", linewidth=1.5)
-		axf[y%5][y/5].axvline(now_precent[y][0], ls="-", linewidth=1.5,color="black")
-		axf[y%5][y/5].axvline(now_precent[y][1], ls="-", linewidth=1.5,color="black")
-		axf[y%5][y/5].set_title("C="+"%.3f" % (float(Alpha_vals[y])**-1))
+		print 'y =',y,'min value = ', np.min(cu),'max value = ', np.max(cu),'mean =', now_mean[y]
+		
+		sns.kdeplot(cu,ax=axf[y%num][y/num])
+		axf[y%num][y/num].axvline(now_mean[y], ls="--", linewidth=1.5)
+		axf[y%num][y/num].axvline(now_precent[y][0], ls="-", linewidth=1.5,color="black")
+		axf[y%num][y/num].axvline(now_precent[y][1], ls="-", linewidth=1.5,color="black")
+		axf[y%num][y/num].set_title("C="+"%.3f" % (float(Alpha_vals[y])**-1))
 		text = '$\mu=%.2f$\n(%.2f,%.2f)'%(float(now_mean[y]), float(now_precent[y][0]),float(now_precent[y][1]))
 		props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
-		axf[y%5][y/5].text(0.05, 0.95, text, transform=axf[y%5][y/5].transAxes, fontsize=14,
-        verticalalignment='top', bbox=props)
-        print 'Done!'
+		axf[y%num][y/num].text(0.05, 0.95, text, transform=axf[y%num][y/num].transAxes, fontsize=14,
+	    verticalalignment='top', bbox=props)
+	    #print 'Done!'
 		#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
 	out = "../../Athvs.All/results_T/" + check(x) + ".jpg"
 	P.savefig(out)
+	P.close(out)
 
 def check(x):
 	if x == 0:
