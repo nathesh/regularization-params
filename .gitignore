@@ -1,0 +1,9 @@
+*.db
+*.pyc
+*.swp
+data/**
+output/**
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore

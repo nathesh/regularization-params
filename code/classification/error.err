@@ -1,4 +1,0 @@
-/u/nathesh/.local/lib/python2.7/site-packages/sklearn/cross_validation.py:684: DeprecationWarning: Bootstrap will no longer be supported as a cross-validation method as of version 0.15 and will be removed in 0.17
-  "will be removed in 0.17", DeprecationWarning)
-/u/nathesh/.local/lib/python2.7/site-packages/numpy/core/fromnumeric.py:2499: VisibleDeprecationWarning: `rank` is deprecated; use the `ndim` attribute or function instead. To find the rank of a matrix see `numpy.linalg.matrix_rank`.
-  VisibleDeprecationWarning)
