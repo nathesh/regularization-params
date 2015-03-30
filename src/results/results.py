@@ -18,10 +18,11 @@ def check(x):
 		return str(0)
 
 
-dirc = '../../Athvs.All/output_T'
+dirc = '../../output/irony/trails_1/'
 files = os.listdir(dirc)
 files.sort()
-files = files[17:] + files[:17]
+
+files = files[19:] + files[:19]
 fil = list(enumerate(files))
 f, axf = P.subplots(5,4,sharex=True)
 P.suptitle("F1")	
@@ -41,7 +42,8 @@ rec_precentile	=	[]
 for nu,fi in fil:
 #for c in range(3,-4,-1):
 	#alpha = 10**c
-	alpha = fi.split('_')[1].split('.csv')[0]
+	print fi
+	alpha = fi.split('.csv')[0]
 	#n = "output/alpha_" + str(alpha) + ".csv"
 	fip = dirc  + "/" + fi
 	Alpha_vals.append(float(alpha))
@@ -89,14 +91,9 @@ All_mean 		= (f1_mean_t,acc_mean_t,prec_mean_t,rec_mean_t)
 All_precentiles = (f1_precentile,acc_precentile,prec_precentile,rec_precentile)
 for x in range(0,4):
 	print check(x)
-	if x == 3:
-		f, axf 		= P.subplots(3,3,figsize=(16,16),sharex='all',sharey='all',squeeze=False)
-		num_vals = range(0,8)
-		num = 3
-	else:
-		f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)	
-		num_vals = range(0,18)
-		num = 5
+	f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)	
+	num_vals = range(0,20)
+	num = 5
 	now 		= All[x]
 	#f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)
 	P.suptitle(check(x))
@@ -118,7 +115,7 @@ for x in range(0,4):
 	    verticalalignment='top', bbox=props)
 	    #print 'Done!'
 		#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
-	out = "../../Athvs.All/results_T/" + check(x) + ".jpg"
+	out = '../../output/irony/trail_1_results/' + check(x) + ".jpg"
 	P.savefig(out)
 	P.close(out)
 
