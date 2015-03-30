@@ -11,7 +11,7 @@ import sys
 import os
 #import threading
 import re
-import easygui
+#import easygui
 import sqlite3
 
 
@@ -201,18 +201,20 @@ def output(scores, alpha, dataset):
 if __name__ == "__main__":  # inputs -> (dataset,model used)
     # setting up bootstrap
     # getting a deprecationwarning => need to look into it
+    '''
     dataset_use = easygui.buttonbox(
         'Click on the dataset to use.', 'Dataset', ('20_newsgroups', 'Irony'))
     if dataset_use == '20_newsgroups':
         dataset_use = easygui.buttonbox(
             'Click on the type of binary classification.', '20_newsgroups', ('Atheism vs. All', 'Atheism vs. Christianity'))
-    data = data(dataset_use)  # input
+    '''
+    data = data('Irony')  # input
     data, target_vals, vectorizer, length = clean(data)
     bs = cv.Bootstrap(length, n_iter=100)
     alpha_vals = np.linspace(.000001, .01, 20)  # input
     #alpha_vals = [.0001]
 
-    trails(data, target_vals, vectorizer, bs, 0, alpha_vals, dataset_use)
+    trails(data, target_vals, vectorizer, bs, 0, alpha_vals, 'Irony')
     print "Done?"
 
 ''' 
