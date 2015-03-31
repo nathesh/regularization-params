@@ -5,6 +5,7 @@ import os
 from os import path 
 import seaborn as sns 	
 import matplotlib.text as txt
+import pdb 
 def check(x):
 	if x == 0:
 		return "F1"
@@ -18,11 +19,11 @@ def check(x):
 		return str(0)
 
 
-dirc = '../../output/irony/trails_1/'
+dirc = '../../output/irony/trails_2/'
 files = os.listdir(dirc)
 files.sort()
-
-files = files[19:] + files[:19]
+print files
+#files = files[19:] + files[:19]
 fil = list(enumerate(files))
 f, axf = P.subplots(5,4,sharex=True)
 P.suptitle("F1")	
@@ -42,7 +43,7 @@ rec_precentile	=	[]
 for nu,fi in fil:
 #for c in range(3,-4,-1):
 	#alpha = 10**c
-	print fi
+	#	print fi
 	alpha = fi.split('.csv')[0]
 	#n = "output/alpha_" + str(alpha) + ".csv"
 	fip = dirc  + "/" + fi
@@ -91,6 +92,7 @@ All_mean 		= (f1_mean_t,acc_mean_t,prec_mean_t,rec_mean_t)
 All_precentiles = (f1_precentile,acc_precentile,prec_precentile,rec_precentile)
 for x in range(0,4):
 	print check(x)
+	#pdb.set_trace()
 	f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)	
 	num_vals = range(0,20)
 	num = 5
@@ -103,8 +105,11 @@ for x in range(0,4):
 	for y in num_vals:
 		cu = now[y]
 		print 'y =',y,'min value = ', np.min(cu),'max value = ', np.max(cu),'mean =', now_mean[y]
+		if (x == 0 and y >= 12) or (x==2 and y >= 10):
+			print x, y
+			continue 
+		sns.kdeplot(cu,ax=axf[y%num][y/num]) # throwing an error at 12?
 		
-		sns.kdeplot(cu,ax=axf[y%num][y/num])
 		axf[y%num][y/num].axvline(now_mean[y], ls="--", linewidth=1.5)
 		axf[y%num][y/num].axvline(now_precent[y][0], ls="-", linewidth=1.5,color="black")
 		axf[y%num][y/num].axvline(now_precent[y][1], ls="-", linewidth=1.5,color="black")
@@ -115,7 +120,7 @@ for x in range(0,4):
 	    verticalalignment='top', bbox=props)
 	    #print 'Done!'
 		#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
-	out = '../../output/irony/trail_1_results/' + check(x) + ".jpg"
+	out = '../../output/irony/trails_2_results/' + check(x) + ".jpg"
 	P.savefig(out)
 	P.close(out)
 
