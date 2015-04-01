@@ -187,7 +187,7 @@ def output(scores, alpha, dataset):
     print "in output"
     name = ''
     if dataset == 'Irony':
-        name = '../../../output/irony/trails_3/' + str(alpha) + '.csv'
+        name = '../../../output/irony/trails_4/' + str(alpha) + '.csv'
     else:
         name = '../../../output/20_newsgroups/ath.v.all/output_1/alpha_' + \
             str(alpha) + '.csv'  # need to change this
