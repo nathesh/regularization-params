@@ -19,11 +19,10 @@ def check(x):
 		return str(0)
 
 
-dirc = '../../output/irony/trails_2/'
+dirc = '../../output/irony/trails_3/'
 files = os.listdir(dirc)
-files.sort()
+files = sorted(files,key=lambda x:float(x.split('.csv')[0])**-1)
 print files
-#files = files[19:] + files[:19]
 fil = list(enumerate(files))
 f, axf = P.subplots(5,4,sharex=True)
 P.suptitle("F1")	
@@ -105,11 +104,7 @@ for x in range(0,4):
 	for y in num_vals:
 		cu = now[y]
 		print 'y =',y,'min value = ', np.min(cu),'max value = ', np.max(cu),'mean =', now_mean[y]
-		if (x == 0 and y >= 12) or (x==2 and y >= 10):
-			print x, y
-			continue 
 		sns.kdeplot(cu,ax=axf[y%num][y/num]) # throwing an error at 12?
-		
 		axf[y%num][y/num].axvline(now_mean[y], ls="--", linewidth=1.5)
 		axf[y%num][y/num].axvline(now_precent[y][0], ls="-", linewidth=1.5,color="black")
 		axf[y%num][y/num].axvline(now_precent[y][1], ls="-", linewidth=1.5,color="black")
@@ -120,7 +115,7 @@ for x in range(0,4):
 	    verticalalignment='top', bbox=props)
 	    #print 'Done!'
 		#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
-	out = '../../output/irony/trails_2_results/' + check(x) + ".jpg"
+	out = '../../output/irony/trails_3_results/' + check(x) + ".jpg"
 	P.savefig(out)
 	P.close(out)
 
