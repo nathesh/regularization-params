@@ -187,7 +187,7 @@ def output(scores, alpha, dataset):
     print "in output"
     name = ''
     if dataset == 'Irony':
-        name = '../../../output/irony/trails_4/' + str(alpha) + '.csv'
+        name = '../../../output/irony/trails_5/' + str(alpha) + '.csv'
     else:
         name = '../../../output/20_newsgroups/ath.v.all/output_1/alpha_' + \
             str(alpha) + '.csv'  # need to change this
@@ -211,7 +211,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     data = data('Irony')  # input
     data, target_vals, vectorizer, length = clean(data)
     bs = cv.Bootstrap(length, n_iter=100)
-    alpha_vals = np.linspace(.00000001, .0000001, 20)  # input
+    alpha_vals = np.linspace(.000000001, .00000001, 20)  # input
     #alpha_vals = [.0001]
 
     trails(data, target_vals, vectorizer, bs, 0, alpha_vals, 'Irony')
