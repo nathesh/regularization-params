@@ -113,11 +113,12 @@ def data(input):  # return the data
         db_path = '../../../data/irony/ironate.db'
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        cursor.execute( # try SUM label 
-            'SELECT text,label FROM irony_commentsegment,irony_label WHERE irony_label.segment_id = irony_commentsegment.id GROUP BY irony_commentsegment.id')
+        cursor.execute('SELECT text,SUM(label) FROM irony_commentsegment,irony_label \
+        WHERE irony_label.segment_id = irony_commentsegment.id AND irony_label.forced_decision = 0 \
+        GROUP BY irony_commentsegment.id having count(label)>2')
         text_labels = cursor.fetchall()
         text = map(lambda x: x[0], text_labels)
-        labels = map(lambda x: x[1], text_labels)
+        labels = map(lambda x: 1 if x[1] > 0 else 0, text_labels)
         data = ip()
         data.add_all(text, labels)
         return data
@@ -187,7 +188,7 @@ def output(scores, alpha, dataset):
     print "in output"
     name = ''
     if dataset == 'Irony':
-        name = '../../../output/irony/trails_5/' + str(alpha) + '.csv'
+        name = '../../../output/irony/trails_6/' + str(alpha) + '.csv'
     else:
         name = '../../../output/20_newsgroups/ath.v.all/output_1/alpha_' + \
             str(alpha) + '.csv'  # need to change this
