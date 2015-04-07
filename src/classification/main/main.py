@@ -113,7 +113,7 @@ def data(input):  # return the data
         db_path = '../../../data/irony/ironate.db'
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        cursor.execute(
+        cursor.execute( # try SUM label 
             'SELECT text,label FROM irony_commentsegment,irony_label WHERE irony_label.segment_id = irony_commentsegment.id GROUP BY irony_commentsegment.id')
         text_labels = cursor.fetchall()
         text = map(lambda x: x[0], text_labels)
