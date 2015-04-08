@@ -212,7 +212,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     data = data('Irony')  # input
     data, target_vals, vectorizer, length = clean(data)
     bs = cv.Bootstrap(length, n_iter=100)
-    alpha_vals = np.linspace(.000000001, .00000001, 20)  # input
+    alpha_vals = np.linspace(.0000001, .000001, 20)  # input
     #alpha_vals = [.0001]
 
     trails(data, target_vals, vectorizer, bs, 0, alpha_vals, 'Irony')
