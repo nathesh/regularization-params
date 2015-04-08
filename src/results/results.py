@@ -19,7 +19,7 @@ def check(x):
 		return str(0)
 
 
-dirc = '../../output/irony/trails_5/'
+dirc = '../../output/irony/trails_6/'
 files = os.listdir(dirc)
 files = sorted(files,key=lambda x:float(x.split('.csv')[0])**-1)
 print files
@@ -115,7 +115,7 @@ for x in range(0,4):
 	    verticalalignment='top', bbox=props)
 	    #print 'Done!'
 		#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
-	out = '../../output/irony/trails_5_results/' + check(x) + ".jpg"
+	out = '../../output/irony/trails_6_results/' + check(x) + ".jpg"
 	P.savefig(out)
 	P.close(out)
 
