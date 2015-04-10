@@ -184,7 +184,7 @@ def trails(data, target_vals, vectorizer, bs, ml, alpha_vals, dataset_use,doc):
         trails_bs(data, target_vals, vectorizer, bs, ml, alpha, dataset_use,doc)
 
 
-def output(scores, alpha, dataset):
+def output(scores, alpha, dataset,doc):
     print "in output"
     name = ''
     if dataset == 'Irony':
@@ -218,7 +218,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
 
     for x,y,z in alpha_val_range:
         alpha_vals = np.linspace(y, x, 20)  # trail 8
-        doc = '../../../output/irony/max/trails_' + z + "/"
+        doc = '../../../output/irony/max/trails_' + str(z) + "/"
         trails(data, target_vals, vectorizer, bs, 0, alpha_vals, 'Irony',doc)
     print "Done?"
 
