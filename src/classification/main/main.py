@@ -113,7 +113,7 @@ def data(input):  # return the data
         db_path = '../../../data/irony/ironate.db'
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        cursor.execute('SELECT text,SUM(label) FROM irony_commentsegment,irony_label \
+        cursor.execute('SELECT text,MAX(label) FROM irony_commentsegment,irony_label \
         WHERE irony_label.segment_id = irony_commentsegment.id AND irony_label.forced_decision = 0 \
         GROUP BY irony_commentsegment.id having count(label)>2')
         text_labels = cursor.fetchall()
@@ -141,7 +141,7 @@ def model(type, alpha):
         return linear_model.SGDClassifier(alpha=alpha)
 
 
-def trails_bs(data, target_vals, vectorizer, bs, ml, alpha, dataset_use):
+def trails_bs(data, target_vals, vectorizer, bs, ml, alpha, dataset_use,doc):
     print alpha
     scores = []
     for train_index, test_index in bs:
@@ -170,10 +170,10 @@ def trails_bs(data, target_vals, vectorizer, bs, ml, alpha, dataset_use):
         recall = metrics.recall_score(test_traget_vals, predict)
         measures = (f1, accuracy, precision, recall)
         scores.append(measures)
-    output(scores, alpha, dataset_use)
+    output(scores, alpha, dataset_use,doc)
 
 
-def trails(data, target_vals, vectorizer, bs, ml, alpha_vals, dataset_use):
+def trails(data, target_vals, vectorizer, bs, ml, alpha_vals, dataset_use,doc):
     if alpha_vals is None:
         alpha_vals = []
         for c in range(3, -4, -1):
@@ -181,14 +181,14 @@ def trails(data, target_vals, vectorizer, bs, ml, alpha_vals, dataset_use):
             alpha_vals.append(a)
 
     for alpha in alpha_vals:
-        trails_bs(data, target_vals, vectorizer, bs, ml, alpha, dataset_use)
+        trails_bs(data, target_vals, vectorizer, bs, ml, alpha, dataset_use,doc)
 
 
 def output(scores, alpha, dataset):
     print "in output"
     name = ''
     if dataset == 'Irony':
-        name = '../../../output/irony/trails_9/' + str(alpha) + '.csv'
+        name = doc + str(alpha) + '.csv'
     else:
         name = '../../../output/20_newsgroups/ath.v.all/output_1/alpha_' + \
             str(alpha) + '.csv'  # need to change this
@@ -212,10 +212,14 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     data = data('Irony')  # input
     data, target_vals, vectorizer, length = clean(data)
     bs = cv.Bootstrap(length, n_iter=100)
-    alpha_vals = np.linspace(.00001, .0001, 20)  # trail 8
-    #alpha_vals = [.0001]
+    alpha_val_range = []
+    for i in range(3,9):
+        alpha_val_range.append((10**-i,10**-(i+1),i-2))        
 
-    trails(data, target_vals, vectorizer, bs, 0, alpha_vals, 'Irony')
+    for x,y,z in alpha_val_range:
+        alpha_vals = np.linspace(y, x, 20)  # trail 8
+        doc = '../../../output/irony/max/trails_' + z + "/"
+        trails(data, target_vals, vectorizer, bs, 0, alpha_vals, 'Irony',doc)
     print "Done?"
 
 ''' 
