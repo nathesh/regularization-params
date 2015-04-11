@@ -138,7 +138,7 @@ def clean(input):  # return data, target, vectorizer and length
 
 def model(type, alpha):
     if type == 0:
-        return linear_model.SGDClassifier(alpha=alpha)
+        return linear_model.SGDClassifier(loss='log',alpha=alpha)
 
 
 def trails_bs(data, target_vals, vectorizer, bs, ml, alpha, dataset_use,doc):
@@ -218,7 +218,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
 
     for x,y,z in alpha_val_range:
         alpha_vals = np.linspace(y, x, 20)  # trail 8
-        doc = '../../../output/irony/max/trails_' + str(z) + "/"
+        doc = '../../../output/irony/log_loss/trails_' + str(z) + "/"
         trails(data, target_vals, vectorizer, bs, 0, alpha_vals, 'Irony',doc)
     print "Done?"
 

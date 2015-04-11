@@ -111,7 +111,7 @@ for results_1,files in files_1:
 			cu = now[y]
 			print 'y =',y,'min value = ', np.min(cu),'max value = ', np.max(cu),'mean =', now_mean[y]
 			if np.min(cu) == 0:
-				continue 
+				continue  
 			sns.kdeplot(cu,ax=axf[y%num][y/num]) # throwing an error at 12?
 			axf[y%num][y/num].axvline(now_mean[y], ls="--", linewidth=1.5)
 			axf[y%num][y/num].axvline(now_precent[y][0], ls="-", linewidth=1.5,color="black")
