@@ -19,7 +19,7 @@ def check(x):
 		return str(0)
 
 
-dirc = '../../output/irony/max/'
+dirc = '../../output/irony/log_loss/'
 files = os.listdir(dirc)
 files.remove('results')
 files_1 = sorted(files,key = lambda x: int(x.split('_')[1]))
@@ -123,7 +123,7 @@ for results_1,files in files_1:
 		    verticalalignment='top', bbox=props)
 		    #print 'Done!'
 			#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
-		out = '../../output/irony/max/results/trails_' + str(results_1) + '_results/' + check(x) + ".jpg"
+		out = '../../output/irony/log_loss/results/trails_' + str(results_1) + '_results/' + check(x) + ".jpg"
 		P.savefig(out)
 		P.close(out)
 
