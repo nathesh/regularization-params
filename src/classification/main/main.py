@@ -13,115 +13,24 @@ import os
 import re
 #import easygui
 import sqlite3
+from data import text_label
+import irony
+import twenty_newsgroup
 
 
-class ip:
-    data = []
-    kv = {}
-    target = []
-
-    def add(self, dt, target):
-        self.data.append(dt)
-        self.target.append(target)
-
-    def add_all(self, data_input, target_input):
-        self.data = data_input
-        self.target = target_input
-
-    def strip_newsgroup_header(self, text):
-        """
-        Given text in "news" format, strip the headers, by removing everything
-        before the first blank line.
-        """
-        _before, _blankline, after = text.partition('\n\n')
-        return after
-
-    def strip_newsgroup_quoting(self, text):
-        """
-        Given text in "news" format, strip lines beginning with the quote
-        characters > or |, plus lines that often introduce a quoted section
-        (for example, because they contain the string 'writes:'.)
-        """
-        _QUOTE_RE = re.compile(r'(writes in|writes:|wrote:|says:|said:'
-                               r'|^In article|^Quoted from|^\||^>)')
-        good_lines = [line for line in text.split('\n')
-                      if not _QUOTE_RE.search(line)]
-        return '\n'.join(good_lines)
-
-    def strip_newsgroup_footer(self, text):
-        """
-        Given text in "news" format, attempt to remove a signature block.
-        As a rough heuristic, we assume that signatures are set apart by either
-        a blank line or a line made of hyphens, and that it is the last such line
-        in the file (disregarding blank lines at the end).
-        """
-        lines = text.strip().split('\n')
-        for line_num in range(len(lines) - 1, -1, -1):
-            line = lines[line_num]
-            if line.strip().strip('-') == '':
-                break
-
-        if line_num > 0:
-            return '\n'.join(lines[:line_num])
-        else:
-            return text
-
-
-def data(input):  # return the data
+def data(input, type_vote=None):  # return the data
     if input == 'Atheism vs. Christianity':
-        cats = ['alt.atheism', 'sci.space']
+        cats = ['alt.atheism', 'Christianity']
         # I got all (train and test)?? remove stuff
         ngs_1 = ngs(subset='all', categories=cats, remove=(
             'headers', 'footers', 'quotes'))
         return ngs_1
     elif input == 'Atheism vs. All':
-        #f = open("../../data/20_newsgroups/alt.atheism/49960",'r')
-        s = '../../../data/newsgroups/20_newsgroups'
-        files = os.listdir(s)
-        files.sort()
-        fi = files.pop(0)
-        s_c = s + fi + '/'
-        paths = os.listdir(s_c)
-        dt = ip()
-        for path in paths:
-
-            fin = open(s_c + path, 'r')
-            data = fin.read()  # need to change the where the is stored
-            data = (data.decode('latin1'))
-
-            data = dt.strip_newsgroup_header(data)
-            data = dt.strip_newsgroup_footer(data)
-            data = dt.strip_newsgroup_quoting(data)
-            dt.add(data, 0)  # data and target
-            target = 0
-        #num = 0
-        for f in files:
-            s_c = s + f + '/'
-            paths = os.listdir(s_c)
-            for path in paths:
-                fin = open(s_c + path, 'r')
-                data = fin.read()  # need to c
-                data = (data.decode('latin1'))
-                data = dt.strip_newsgroup_header(data)
-                data = dt.strip_newsgroup_footer(data)
-                data = dt.strip_newsgroup_quoting(data)
-                dt.add(data, 1)
-                target = 1
-            #num += 1
-        return dt
-    elif input == 'Irony':
-        db_path = '../../../data/irony/ironate.db'
-        conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
-        cursor.execute('SELECT text,MAX(label) FROM irony_commentsegment,irony_label \
-        WHERE irony_label.segment_id = irony_commentsegment.id AND irony_label.forced_decision = 0 \
-        GROUP BY irony_commentsegment.id having count(label)>2')
-        text_labels = cursor.fetchall()
-        text = map(lambda x: x[0], text_labels)
-        labels = map(lambda x: 1 if x[1] > 0 else 0, text_labels)
-        data = ip()
-        data.add_all(text, labels)
-        return data
+        return twenty_newsgroup.run()
+    elif input == 'Irony-all':
+        return irony.get_all(type)
+    elif input == 'Irony-CL':
+        return irony.get_conservatives_liberal(type_vote)
 
 
 def clean(input):  # return data, target, vectorizer and length
@@ -136,17 +45,16 @@ def clean(input):  # return data, target, vectorizer and length
     return (data_set, target_vals, vectorizer, length)
 
 
-def model(type, alpha):
-    if type == 0:
-        return linear_model.SGDClassifier(loss='log',alpha=alpha)
+def model(loss, alpha):
+    return linear_model.SGDClassifier(loss=loss, alpha=alpha)
 
 
-def trails_bs(data, target_vals, vectorizer, bs, ml, alpha, dataset_use,doc):
+def trails_bs(data, target_vals, vectorizer, bs, ml, alpha, dataset_use, doc):
     print alpha
     scores = []
     for train_index, test_index in bs:
         train = data[train_index]
-        #print type(train[0])
+        # print type(train[0])
 
         #train = train.encode('latin1')
         #train = train.encode('latin-1')
@@ -170,10 +78,10 @@ def trails_bs(data, target_vals, vectorizer, bs, ml, alpha, dataset_use,doc):
         recall = metrics.recall_score(test_traget_vals, predict)
         measures = (f1, accuracy, precision, recall)
         scores.append(measures)
-    output(scores, alpha, dataset_use,doc)
+    output(scores, alpha, dataset_use, doc)
 
 
-def trails(data, target_vals, vectorizer, bs, ml, alpha_vals, dataset_use,doc):
+def trails(data, target_vals, vectorizer, bs, ml, alpha_vals, dataset_use, doc):
     if alpha_vals is None:
         alpha_vals = []
         for c in range(3, -4, -1):
@@ -181,10 +89,11 @@ def trails(data, target_vals, vectorizer, bs, ml, alpha_vals, dataset_use,doc):
             alpha_vals.append(a)
 
     for alpha in alpha_vals:
-        trails_bs(data, target_vals, vectorizer, bs, ml, alpha, dataset_use,doc)
+        trails_bs(
+            data, target_vals, vectorizer, bs, ml, alpha, dataset_use, doc)
 
 
-def output(scores, alpha, dataset,doc):
+def output(scores, alpha, dataset, doc):
     print "in output"
     name = ''
     if dataset == 'Irony':
@@ -209,25 +118,21 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
         dataset_use = easygui.buttonbox(
             'Click on the type of binary classification.', '20_newsgroups', ('Atheism vs. All', 'Atheism vs. Christianity'))
     '''
-    data = data('Irony')  # input
-    data, target_vals, vectorizer, length = clean(data)
-    bs = cv.Bootstrap(length, n_iter=100)
-    alpha_val_range = []
-    for i in range(3,9):
-        alpha_val_range.append((10**-i,10**-(i+1),i-2))        
+    types_vote = ['MAX', 'MAJORITY']
+    types_model = ['log', 'hinge']
+    for type_vote in types_vote:
+        data = data('Irony', type_vote)  # input
+        data, target_vals, vectorizer, length = clean(data)
+        bs = cv.Bootstrap(length, n_iter=100)
+        alpha_val_range = []
+        for i in range(3, 9):
+            alpha_val_range.append((10 ** -i, 10 ** -(i + 1), i - 2))
 
-    for x,y,z in alpha_val_range:
-        alpha_vals = np.linspace(y, x, 20)  # trail 8
-        doc = '../../../output/irony/log_loss/trails_' + str(z) + "/"
-        trails(data, target_vals, vectorizer, bs, 0, alpha_vals, 'Irony',doc)
-    print "Done?"
-
-''' 
-min df: 3 
-reduce feature space: 50,000 
-create a subprocess
-'''
-
-''' Svm -> SGD with hinge loss; L2 norm 
-    SGD
-'''
+        for x, y, z in alpha_val_range:
+            alpha_vals = np.linspace(y, x, 20)  # trail 8
+            for type_model in types_model:
+                doc = '../../../output/irony/CL/' + type_model + \
+                    '/' + type_vote + '/trails_' + str(z) + "/"
+                trails(
+                    data, target_vals, vectorizer, bs, type_model, alpha_vals, 'Irony', doc)
+        print "Done?"
