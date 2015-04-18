@@ -19,7 +19,7 @@ import twenty_newsgroup
 
 
 def data(input, type_vote=None):  # return the data
-    #print type_vote
+    #print type_vote,input
     if input == 'Atheism vs. Christianity':
         cats = ['alt.atheism', 'Christianity']
         # I got all (train and test)?? remove stuff
@@ -31,9 +31,9 @@ def data(input, type_vote=None):  # return the data
     elif input == 'Irony-all':
         return irony.get_all(type_vote)
     elif input == 'Irony-CL':
-        return irony.get_conservatives_liberal(type_vote)
-        #print test,"HEre?"
-        
+        #print "Why no get here?"
+        test = irony.get_conservatives_liberal(type_vote)
+        return test
 
 
 
@@ -122,7 +122,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
         dataset_use = easygui.buttonbox(
             'Click on the type of binary classification.', '20_newsgroups', ('Atheism vs. All', 'Atheism vs. Christianity'))
     '''
-    types_vote = ['MAX', 'MAJORITY']
+    types_vote = ['MAJORITY']
     types_model = ['log', 'hinge']
     for type_vote in types_vote:
         data = data('Irony-CL', type_vote)  # input
