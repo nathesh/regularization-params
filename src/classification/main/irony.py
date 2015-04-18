@@ -65,7 +65,7 @@ def get_all(type_vote):
     db_path = '../../../data/irony/ironate.db'
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    if type_vote == 'MAX'
+    if type_vote == 'MAX':
 	    cursor.execute('SELECT text,MAX(label) FROM irony_commentsegment,irony_label \
 	    WHERE irony_label.segment_id = irony_commentsegment.id AND irony_label.forced_decision = 0 \
 	    GROUP BY irony_commentsegment.id having count(label)>2')
