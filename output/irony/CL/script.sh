@@ -14,3 +14,7 @@ do
  done
 done
 
+for d in $(ls)
+do 
+	fp
+
