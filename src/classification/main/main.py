@@ -19,6 +19,7 @@ import twenty_newsgroup
 
 
 def data(input, type_vote=None):  # return the data
+    #print type_vote
     if input == 'Atheism vs. Christianity':
         cats = ['alt.atheism', 'Christianity']
         # I got all (train and test)?? remove stuff
@@ -28,9 +29,12 @@ def data(input, type_vote=None):  # return the data
     elif input == 'Atheism vs. All':
         return twenty_newsgroup.run()
     elif input == 'Irony-all':
-        return irony.get_all(type)
+        return irony.get_all(type_vote)
     elif input == 'Irony-CL':
         return irony.get_conservatives_liberal(type_vote)
+        #print test,"HEre?"
+        
+
 
 
 def clean(input):  # return data, target, vectorizer and length
@@ -121,7 +125,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     types_vote = ['MAX', 'MAJORITY']
     types_model = ['log', 'hinge']
     for type_vote in types_vote:
-        data = data('Irony', type_vote)  # input
+        data = data('Irony-CL', type_vote)  # input
         data, target_vals, vectorizer, length = clean(data)
         bs = cv.Bootstrap(length, n_iter=100)
         alpha_val_range = []

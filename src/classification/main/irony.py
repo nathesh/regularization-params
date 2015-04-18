@@ -54,11 +54,14 @@ def get_conservatives_liberal(type_vote):
 	liberal = [fetched_all[ids] for ids in liberal_comment_ids]
 	conservative = [fetched_all[ids] for ids in conservative_comment_ids]
 	liberal_conservative = liberal + conservative
-	texts = [text for text,_ in liberal_conservative]
-	labels = [label for _,label in liberal_conservative]
+	#print liberal_conservative[0]
+	texts = [text for _,text,_ in liberal_conservative]
+	labels = [label for _,_,label in liberal_conservative]
 	labels = [1  if label > 0 else -1 for label in labels]
+	#print labels[]
 	data = text_label()
-	data.add_all(text,labels)
+	data.add_all(texts,labels)
+	#print 'Here and'
 	return data
 
 def get_all(type_vote):
