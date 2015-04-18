@@ -42,8 +42,12 @@ def get_conservatives_liberal(type_vote):
 	                                get_all_comments_from_subreddit("progressive", cursor) if c_id in labeled_comment_ids]))
 
 
-	if type_vote == 'MAX'
+	if type_vote == 'MAX':
 		cursor.execute('SELECT segment_id,text,MAX(label) FROM irony_commentsegment,irony_label \
+		    		WHERE irony_label.segment_id = irony_commentsegment.id AND irony_label.forced_decision = 0 \
+					GROUP BY irony_commentsegment.id having count(label)>2')
+	else:
+		cursor.execute('SELECT segment_id,text,SUM(label) FROM irony_commentsegment,irony_label \
 		    		WHERE irony_label.segment_id = irony_commentsegment.id AND irony_label.forced_decision = 0 \
 					GROUP BY irony_commentsegment.id having count(label)>2')
 	fetched_all = cursor.fetchall() 
@@ -52,6 +56,7 @@ def get_conservatives_liberal(type_vote):
 	liberal_conservative = liberal + conservative
 	texts = [text for text,_ in liberal_conservative]
 	labels = [label for _,label in liberal_conservative]
+	labels = [1  if label > 0 else -1 for label in labels]
 	data = text_label()
 	data.add_all(text,labels)
 	return data
