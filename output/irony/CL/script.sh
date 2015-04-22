@@ -13,8 +13,3 @@ do
    mkdir  "${d}"/trails_$((i))/
  done
 done
-
-for d in $(ls)
-do 
-	fp
-
