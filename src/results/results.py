@@ -6,6 +6,7 @@ from os import path
 import seaborn as sns 	
 import matplotlib.text as txt
 import pdb 
+from cost_function import cost_function
 def check(x):
 	if x == 0:
 		return "F1"
@@ -30,13 +31,13 @@ for loss_type in loss_types:
 			files.remove('results')
 			files_1 = sorted(files,key = lambda x: int(x.split('_')[1]))
 			files_1 = files_1[:6]
-			print files_1
+			#print files_1
 			files_1 = list(enumerate(files_1,start=1))
-			for results_1,files in files_1:
+			for results_1,files in files_1: # set of 20 trails 
 				_,_,f1_max,f1_min,a_max,a_min,p_max,p_min,r_min,r_max = reader.next()
 				#read_num = reader.next()
-				print "Reading spam: ", f1_max,f1_min,a_max,a_min,p_max,p_min,r_min,r_max
-				cost.add_min_max(f1_max,f1_min,a_max,a_min,p_max,p_min,r_min,r_max)
+				cost_function_i = cost_function()
+				cost_function_i.add_min_max([(f1_max,f1_min),(a_max,a_min),(p_max,p_min),(r_max,r_min)])
 				files = dirc + files + "/"
 				files_2 = files
 				files = os.listdir(files)
@@ -67,7 +68,7 @@ for loss_type in loss_types:
 					Alpha_vals.append(float(alpha))
 					with open(fip,'r') as f:
 						spamreader = csv.reader(f, delimiter=' ', quotechar='|')
-						cost_function.next()
+						cost_function_i.next()
 						f1 = []
 						accuracy = []
 						precision = []
@@ -80,11 +81,11 @@ for loss_type in loss_types:
 								accuracy.append(float(a))
 								precision.append(float(p))
 								recall.append(float(r))
-								cost_function.add_values(f,a,p,r)
+								cost_function_i.add_values([f,a,p,r])
 							else:
 
 								d +=1
-						cost_function.calculate()
+						cost_function_i.calculate()
 						f1 		  = np.array(f1)
 						accuracy  = np.array(accuracy)
 						precision = np.array(precision)
@@ -127,15 +128,15 @@ for loss_type in loss_types:
 						#print 'y =',y,'min value = ', np.min(cu),'max value = ', np.max(cu),'mean =', now_mean[y]
 						if np.min(cu) == 0:
 							continue  
-						cost_trail = cost_function.get_cost(y)
+						#cost_trail = cost_function_i.get_cost(y)
 						sns.kdeplot(cu,ax=axf[y%num][y/num]) # throwing an error at 12?
 						axf[y%num][y/num].axvline(now_mean[y], ls="--", linewidth=1.5)
 						axf[y%num][y/num].axvline(now_precent[y][0], ls="-", linewidth=1.5,color="black")
 						axf[y%num][y/num].axvline(now_precent[y][1], ls="-", linewidth=1.5,color="black")
-						axf[y%num][y/num].set_title("C="+"%.3f" % (float(Alpha_vals[y])**-1))
+						axf[y%num][y/num].set_title("C="+"%3.1f" % (float(Alpha_vals[y])**-1))
 						text = '$\mu=%.2f$\n(%.2f,%.2f)'%(float(now_mean[y]), float(now_precent[y][0]),float(now_precent[y][1]))
 						props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
-						axf[y%num][y/num].text(0.05, 0.95, text, transform=axf[y%num][y/num].transAxes, fontsize=14,
+						axf[y%num][y/num].text(0.05, 0.95, text, transform=axf[y%num][y/num].transAxes, fontsize=10,
 					    verticalalignment='top', bbox=props)
 					    #print 'Done!'
 						#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
