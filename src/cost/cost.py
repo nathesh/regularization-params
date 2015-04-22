@@ -16,10 +16,10 @@ def exponential():
 
 if __name__ == "__main__":
 	loss_types = ['log', 'hinge']
-	
+
 	with open("test.csv", 'w') as out:
 		csv_out = csv.writer(out)
-		csv_out.writerow(('loss type','trail number','F1 max', 'F1 min', 'Accuracy max', 'Accuracy min','Precision max','Precision min','Recall max','Recall min'))
+		##csv_out.writerow(('loss type','trail number','F1 max', 'F1 min', 'Accuracy max', 'Accuracy min','Precision max','Precision min','Recall max','Recall min'))
 			
 		for loss_type in loss_types:
 			dirc = '../../output/irony/CL/' + loss_type + '/MAX/'
