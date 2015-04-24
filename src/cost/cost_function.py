@@ -12,8 +12,6 @@ class cost_function:  # test cost for only recall now
     def add_min_max(self, min_max):
         self.min_max = min_max
         del self.values[:]
-        self.cost_index = 0
-        del self.cost[:]
         self.cost.append([0, 0, 0])  # cost for f
         self.cost.append([0, 0, 0])  # cost for a
         self.cost.append([0, 0, 0])  # cost for p
@@ -33,8 +31,8 @@ class cost_function:  # test cost for only recall now
     def calculate(self):
         [self.calculate_cost(value) for value in self.values]
 
-    def get_cost(self,y):
-        return self.cost[4*y-1][0]  # returns exponential and 3
+    def get_cost(self,trail_num,type=1):
+        return self.cost[4*trail_num - type][0]  # returns exponential and recall
 
     def calculate_cost(self, value):
         # print "ZIP",     zip(value, self.min_max, self.cost)
