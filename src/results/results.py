@@ -31,7 +31,7 @@ for loss_type in loss_types:
 		files_1 = files_1[:6]
 		#print files_1
 		files_1 = list(enumerate(files_1,start=1))
-		for results_1,files in files_1: # set of 20 trails 
+		for results_1,files in files_1: # set of 20 trails i.e. trails_1
 			
 			#read_num = reader.next()
 			
@@ -55,7 +55,7 @@ for loss_type in loss_types:
 			acc_precentile	=	[]
 			prec_precentile	=	[]
 			rec_precentile	=	[]
-			for nu,fi in fil:
+			for nu,fi in fil: # alpha value 
 			#for c in range(3,-4,-1):
 				#alpha = 10**c
 				#	print fi
@@ -63,7 +63,7 @@ for loss_type in loss_types:
 				#n = "output/alpha_" + str(alpha) + ".csv"
 				fip = files_2  + "/" + fi
 				Alpha_vals.append(float(alpha))
-				with open(fip,'r') as f:
+				with open(fip,'r') as f: # Open up for the alpha value 
 					spamreader = csv.reader(f, delimiter=' ', quotechar='|')
 					f1 = []
 					accuracy = []
@@ -77,11 +77,8 @@ for loss_type in loss_types:
 							accuracy.append(float(a))
 							precision.append(float(p))
 							recall.append(float(r))
-							
 						else:
-
 							d +=1
-					
 					f1 		  = np.array(f1)
 					accuracy  = np.array(accuracy)
 					precision = np.array(precision)
@@ -110,10 +107,10 @@ for loss_type in loss_types:
 			for x in range(0,4):
 				print check(x),results_1
 				#pdb.set_trace()
-				f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)	
+				f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=True)	
 				num_vals = range(0,20)
-				num = 5
 				now 		= All[x]
+				num = 5
 				#f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)
 				P.suptitle(check(x))
 				P.tight_layout()
@@ -121,20 +118,22 @@ for loss_type in loss_types:
 				now_precent = All_precentiles[x]
 				for y in num_vals:
 					cu = now[y]
-					print 'y =',y,'min value = ', np.min(cu),'max value = ', np.max(cu),'mean =', now_mean[y]
+					#print 'y =',y,'min value = ', np.min(cu),'max value = ', np.max(cu),'mean =', now_mean[y]
 					if np.min(cu) == 0:
 						continue  
+					if np.min(cu) <= 0 or np.max(cu) > 1:
+						print 'There are negs!'
 					#cost_trail = cost_function_i.get_cost(y)
 					sns.kdeplot(cu,ax=axf[y%num][y/num]) # throwing an error at 12?
-					axf[y%num][y/num].axvline(now_mean[y], ls="--", linewidth=1.5)
-					axf[y%num][y/num].axvline(now_precent[y][0], ls="-", linewidth=1.5,color="black")
-					axf[y%num][y/num].axvline(now_precent[y][1], ls="-", linewidth=1.5,color="black")
-					axf[y%num][y/num].set_title("C="+"%3.1f" % (float(Alpha_vals[y])**-1))
+					axf[y%num][y/num].axvline(now_mean[y], ls="--", linewidth=1.25)
+					axf[y%num][y/num].axvline(now_precent[y][0], ls="-", linewidth=1.25,color="black")
+					axf[y%num][y/num].axvline(now_precent[y][1], ls="-", linewidth=1.25,color="black")
+					axf[y%num][y/num].set_title("C="+"%3.4g" % (float(Alpha_vals[y])**-1))
 					text = '$\mu=%.2f$\n(%.2f,%.2f)'%(float(now_mean[y]), float(now_precent[y][0]),float(now_precent[y][1]))
 					props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
-					axf[y%num][y/num].text(0.05, 0.95, text, transform=axf[y%num][y/num].transAxes, fontsize=10,
-				    verticalalignment='top', bbox=props)
-				    #print 'Done!'
+					axf[y%num][y/num].text(0.05, 0.95, text, transform=axf[y%num][y/num].transAxes, fontsize=12,
+					verticalalignment='top', bbox=props)
+					#print 'Done!'
 					#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
 				out = '../../output/irony/CL/' + loss_type + '/' + vote_type + '/results/trails_' + str(results_1) + '_results/' + check(x) + ".jpg"
 				P.savefig(out)
