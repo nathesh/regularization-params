@@ -107,14 +107,15 @@ for loss_type in loss_types:
 			for x in range(0,4):
 				print check(x),results_1
 				#pdb.set_trace()
-				f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=True)	
+				#f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=True)	
 				num_vals = range(0,20)
 				now 		= All[x]
 				num = 5
-				#f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)
+				f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)
 				P.suptitle(check(x))
 				P.tight_layout()
-				P.xlim([0,1])
+				sns.set_context("paper")
+				#P.xlim([0,1])
 				now_mean 	= All_mean[x]
 				now_precent = All_precentiles[x]
 				for y in num_vals:
