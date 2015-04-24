@@ -114,6 +114,7 @@ for loss_type in loss_types:
 				#f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)
 				P.suptitle(check(x))
 				P.tight_layout()
+				P.xlim([0,1])
 				now_mean 	= All_mean[x]
 				now_precent = All_precentiles[x]
 				for y in num_vals:

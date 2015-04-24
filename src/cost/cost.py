@@ -18,6 +18,11 @@ def check(x):
 		return "recall"
 	else:
 		return str(0)
+def LT(loss_type):
+	if loss_type == 0:
+		return 'log'
+	else:
+		return 'hinge'
 
 def write():
 	loss_types = ['log', 'hinge']
@@ -124,12 +129,16 @@ def cost_function_graphs():
 				costs = np.array(costs)
 				alpha_values = np.array(alpha_values)
 				#print alpha_values
-				data = randn(75)
-				P.hist(data)
-				outp = "pics/" + str(check(metric)) + '__' + str(loss_num) + ".jpg"
+				
+				P.figure()
+				P.suptitle(check(metric) + "_" + LT(loss_num))
+				sns.kdeplot(costs)
+				P.xlim([-20,120])
+				P.ylim([0,.3])
+				outp = "pics/" + str(check(metric)) + '__' + LT(loss_num) + ".jpg"
 				P.savefig(outp)
 				P.close(outp)
-
+				#P.flush()
 
 
 
