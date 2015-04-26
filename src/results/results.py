@@ -131,7 +131,7 @@ for loss_type in loss_types:
 					#cost_trail = cost_function_i.get_cost(y)
 					sns.kdeplot(cu,ax=axf[y%num][y/num]) # throwing an error at 12?
 					axf[y%num][y/num].axvline(now_mean[y], ls="--", linewidth=1.5)
-					axf[y%num][y/num].axvline(cv[x], ls="--", linewidth=2,color="red")
+					axf[y%num][y/num].axvline(cv[x], ls="--", linewidth=25,color="red")
 					axf[y%num][y/num].axvline(now_precent[y][0], ls="-", linewidth=1.25,color="black")
 					axf[y%num][y/num].axvline(now_precent[y][1], ls="-", linewidth=1.25,color="black")
 					axf[y%num][y/num].set_title("C="+"%3.4g" % (float(Alpha_vals[y])**-1))

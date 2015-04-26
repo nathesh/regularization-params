@@ -32,7 +32,7 @@ def get_conservatives_liberal(type_vote):
 	return data
 	'''
 	#print 'Here in get_conservatives_liberal'
-	db_path = '../../data/irony/ironate.db'
+	db_path = '../../	data/irony/ironate.db'
 	conn = sqlite3.connect(db_path)
 	cursor = conn.cursor()
 	labeled_comment_ids = get_labeled_thrice_comments(cursor)

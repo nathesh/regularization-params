@@ -6,6 +6,8 @@ from numpy.random import randn
 from cost_function import cost_function
 import seaborn as sns 
 import matplotlib.pyplot as P
+import matplotlib.patches as mpatches
+
 
 def check(x):
 	if x == 0:
@@ -127,14 +129,19 @@ def cost_function_graphs():
 				costs = []
 				costs = [cost_function_i.get_cost(trail_num,metric) for trail_num in trail_nums]
 				costs = np.array(costs)
+				#costs = [cost/100 for cost in costs]
 				alpha_values = np.array(alpha_values)
-				#print alpha_values
+				print len(alpha_values), costs[:,0].size
 				
 				P.figure()
+				f, axf = P.subplots(squeeze=False)
 				P.suptitle(check(metric) + "_" + LT(loss_num))
-				sns.kdeplot(costs)
-				P.xlim([-20,120])
-				P.ylim([0,.3])
+				P.plot(costs[:,0], label='exponential')
+				P.plot(costs[:,1],label='step')
+				P.plot(costs[:,2],label='linear',linestyle='--',color='black')
+				P.legend()
+				#P.xlim([0,100])
+				#P.ylim([0, .4])
 				outp = "pics/" + str(check(metric)) + '__' + LT(loss_num) + ".jpg"
 				P.savefig(outp)
 				P.close(outp)
