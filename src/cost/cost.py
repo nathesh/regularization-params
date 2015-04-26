@@ -6,8 +6,10 @@ from numpy.random import randn
 from cost_function import cost_function
 import seaborn as sns 
 import matplotlib.pyplot as P
+from pylab import *
 import matplotlib.patches as mpatches
-
+from matplotlib.ticker import OldScalarFormatter
+from matplotlib.ticker import ScalarFormatter 
 
 def check(x):
 	if x == 0:
@@ -132,16 +134,24 @@ def cost_function_graphs():
 				#costs = [cost/100 for cost in costs]
 				alpha_values = np.array(alpha_values)
 				print len(alpha_values), costs[:,0].size
-				
+				np.set_printoptions(suppress=True)
 				P.figure()
 				f, axf = P.subplots(squeeze=False)
 				P.suptitle(check(metric) + "_" + LT(loss_num))
-				P.plot(costs[:,0], label='exponential')
-				P.plot(costs[:,1],label='step')
-				P.plot(costs[:,2],label='linear',linestyle='--',color='black')
+				P.plot(alpha_values,costs[:,0], label='exponential')
+				P.plot(alpha_values,costs[:,1],label='step')
+				P.plot(alpha_values,costs[:,2],label='linear',linestyle='--',color='black')
+				#P.xticks(range(120), alpha_values[0:10], size='small')
+				#gca().xaxis.set_major_formatter(OldScalarFormatter())
+				#ax = gca() 
+				xscale('log') 
+				ax = gca().xaxis 
+				ax.set_major_formatter(ScalarFormatter()) 
 				P.legend()
 				#P.xlim([0,100])
 				#P.ylim([0, .4])
+				ax = gca().xaxis 
+
 				outp = "pics/" + str(check(metric)) + '__' + LT(loss_num) + ".jpg"
 				P.savefig(outp)
 				P.close(outp)
