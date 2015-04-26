@@ -7,6 +7,7 @@ import seaborn as sns
 import matplotlib.text as txt
 import pdb 
 from cost_function import cost_function
+import crossv 
 def check(x):
 	if x == 0:
 		return "F1"
@@ -104,6 +105,7 @@ for loss_type in loss_types:
 			All 			= (f1_t,acc_t,prec_t,rec_t)
 			All_mean 		= (f1_mean_t,acc_mean_t,prec_mean_t,rec_mean_t)
 			All_precentiles = (f1_precentile,acc_precentile,prec_precentile,rec_precentile)
+			
 			for x in range(0,4):
 				print check(x),results_1
 				#pdb.set_trace()
@@ -119,6 +121,7 @@ for loss_type in loss_types:
 				now_mean 	= All_mean[x]
 				now_precent = All_precentiles[x]
 				for y in num_vals:
+					cv = crossv.run(Alpha_vals[y],vote_type,loss_type)
 					cu = now[y]
 					#print 'y =',y,'min value = ', np.min(cu),'max value = ', np.max(cu),'mean =', now_mean[y]
 					if np.min(cu) == 0:
@@ -128,6 +131,7 @@ for loss_type in loss_types:
 					#cost_trail = cost_function_i.get_cost(y)
 					sns.kdeplot(cu,ax=axf[y%num][y/num]) # throwing an error at 12?
 					axf[y%num][y/num].axvline(now_mean[y], ls="--", linewidth=1.5)
+					axf[y%num][y/num].axvline(cv[x], ls="--", linewidth=2,color="red")
 					axf[y%num][y/num].axvline(now_precent[y][0], ls="-", linewidth=1.25,color="black")
 					axf[y%num][y/num].axvline(now_precent[y][1], ls="-", linewidth=1.25,color="black")
 					axf[y%num][y/num].set_title("C="+"%3.4g" % (float(Alpha_vals[y])**-1))
