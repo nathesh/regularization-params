@@ -113,7 +113,7 @@ for loss_type in loss_types:
 				num_vals = range(0,20)
 				now 		= All[x]
 				num = 5
-				f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=False)
+				f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=True)
 				P.suptitle(check(x))
 				P.tight_layout()
 				sns.set_context("paper")

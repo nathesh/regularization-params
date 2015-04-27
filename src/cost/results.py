@@ -10,7 +10,7 @@ from pylab import *
 import matplotlib.patches as mpatches
 from matplotlib.ticker import OldScalarFormatter
 from matplotlib.ticker import ScalarFormatter 
-
+from bootstraps import bootstrap 
 def check(x):
 	if x == 0:
 		return "F1"
@@ -33,7 +33,7 @@ def write():
 	with open("cost.csv", 'w') as out:
 		csv_out = csv.writer(out)
 		##csv_out.writerow(('loss type','trail number','F1 max', 'F1 min', 'Accuracy max', 'Accuracy min','Precision max','Precision min','Recall max','Recall min'))
-		for loss_type in loss_types:
+		for loss_types in loss_types:
 			dirc = '../../output/irony/CL/' + loss_type + '/MAX/'
 			files = os.listdir(dirc)
 			files.remove('results')
@@ -91,6 +91,7 @@ def cost_function_graphs():
 		cost_reader = csv.reader(cost_file, delimiter=',', quotechar='|')
 		loss_types = ['log','hinge']
 		for loss_num, loss_type in enumerate(loss_types):
+			bootstraps_t = bootstrap()
 			alpha_values = []
 			path = '../../output/irony/CL/' + loss_type + '/MAX/'
 			trails_files = os.listdir(path)
@@ -110,8 +111,9 @@ def cost_function_graphs():
 				alpha_trails = [trails_file + alpha_trail for alpha_trail in alpha_trails]
 				for n, alpha_trail in enumerate(alpha_trails):
 					alpha_value = alpha_trail.split('/')[8]
+					alpha_value = float(alpha_value.split(".csv")[0])
 					alpha_values.append(alpha_value)
-					cost_function_i.next()
+					#print alpha_value, 'av'
 					#print n,cost_function_i.cost_index
 					with open(alpha_trail, 'r') as f:
 						trail_reader = csv.reader(f, delimiter=' ', quotechar='|')
@@ -119,57 +121,62 @@ def cost_function_graphs():
 						for row in trail_reader:
 							if counter != 0:
 								f, a, p, r = row[0].split(',')
-								cost_function_i.add_values([float(f),float(a),float(p),float(r)])
-								cost_function_i.calculate_current_cost([])
+								f,a,p,r = cost_function_i.calculate_current_cost([float(f),float(a),float(p),float(r)])
+								bootstraps_t.add([f,a,p,r],alpha_value)
+								counter +=1
 							else:
 								counter = 1
-					cost_function_i.calculate()
+						#print len(bootstraps_t.get(alpha_value)), alpha_value,loss_type,alpha_trail
+					
 			trail_nums = range(20*6*loss_num,20*6*(loss_num+1))
 			#print cost_function_i.cost_index
-			alpha_values = [float(a.split(".csv")[0]) for a in alpha_values]
+			#alpha_values = [float(a.split(".")[0]) for a in alpha_values]
 			metrics = range(3,-1,-1)
-			for metric in metrics:
-				costs = []
-				costs = [cost_function_i.get_cost(trail_num,metric) for trail_num in trail_nums]
-				costs = np.array(costs)
-				#costs = [cost/100 for cost in costs]
-				alpha_values = np.array(alpha_values)
-				print len(alpha_values), costs[:,0].size
-				np.set_printoptions(suppress=True)
-				P.figure()
-				f, axf = P.subplots(squeeze=False)
-				P.suptitle(check(metric) + "_" + LT(loss_num))
-				P.plot(alpha_values,costs[:,0], label='exponential')
-				P.plot(alpha_values,costs[:,1],label='step')
-				P.plot(alpha_values,costs[:,2],label='linear',linestyle='--',color='black')
-				#P.xticks(range(120), alpha_values[0:10], size='small')
-				#gca().xaxis.set_major_formatter(OldScalarFormatter())
-				#ax = gca() 
-				xscale('log') 
-				ax = gca().xaxis 
-				ax.set_major_formatter(ScalarFormatter()) 
-				P.legend()
-				#P.xlim([0,100])
-				#P.ylim([0, .4])
-				ax = gca().xaxis 
+			ks = range(0,6)
+			for k in ks:
+				for x in range(0,4):
+					num_vals = range(0,120)
+					num = 5
+					f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=True)
+					P.suptitle(check(x))
+					P.tight_layout()
+					sns.set_context("paper")
+					P.xlim([0,1])
+					count = 0
+					for y in num_vals[20*k:20*(k+1)]:
+						#cv = crossv.run(Alpha_vals[y],vote_type,loss_type)
+						cu = bootstraps_t.get(alpha_values[y])
+						cu = np.array(cu)
+						#print cu.shape,cu.
+						if np.min(cu) < 0:
+							print np.min(cu)
+						if np.max(cu) > 1:
+							print np.max(cu)
+						cu = cu[0:100,x]
+						#print 'y =',y,'min value = ', np.min(cu),'max value = ', np.max(cu),'mean =', now_mean[y]
+						#print "y=",y,"count=",count,"x=",x,"x*y",x*y
 
-				outp = "pics/" + str(check(metric)) + '__' + LT(loss_num) + ".jpg"
-				P.savefig(outp)
-				P.close(outp)
-				#P.flush()
+						#cost_trail = cost_function_i.get_cost(y)
+						sns.kdeplot(cu,ax=axf[count%num][count/num]) # throwing an error at 12?
+						axf[count%num][count/num].set_title("C="+"%3.4g" % (float(alpha_values[y])**-1))
+						'''
+						axf[y%num][y/num].axvline(now_mean[y], ls="--", linewidth=1.5)
+						axf[y%num][y/num].axvline(cv[x], ls="--", linewidth=25,color="red")
+						axf[y%num][y/num].axvline(now_precent[y][0], ls="-", linewidth=1.25,color="black")
+						axf[y%num][y/num].axvline(now_precent[y][1], ls="-", linewidth=1.25,color="black")
+						axf[y%num][y/num].set_title("C="+"%3.4g" % (float(Alpha_vals[y])**-1))
 
-
-
-
-
-
-
-
-
-
-
-
-
+						text = '$\mu=%.2f$\n(%.2f,%.2f)'%(float(now_mean[y]), float(now_precent[y][0]),float(now_precent[y][1]))
+						props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+						axf[y%num][y/num].text(0.05, 0.95, text, transform=axf[y%num][y/num].transAxes, fontsize=12,
+						verticalalignment='top', bbox=props)
+						'''
+						#print 'Done!'
+						#axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
+						count +=1
+					out =  "results/" + str(k+1) + '_'+str(check(x)) + '__' + LT(loss_num) + ".jpg"
+					P.savefig(out)
+					P.close(out)
 
 
 if __name__ == "__main__":
