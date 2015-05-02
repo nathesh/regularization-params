@@ -6,9 +6,6 @@ class bootstrap:
 		self.alpha_values = {}
 
 	def add(self,values,alpha):
-		if alpha in self.alpha_values and len(self.alpha_values[alpha]) >= 100:
-			pass
-
 		if alpha in self.alpha_values:
 			self.alpha_values[alpha].append(values)
 		else:
