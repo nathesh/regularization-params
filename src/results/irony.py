@@ -7,7 +7,7 @@ def get_labeled_thrice_comments(cursor):
         '''select comment_id from irony_label group by comment_id having count(distinct labeler_id) >= 3;'''
     )
     thricely_labeled_comment_ids = _grab_single_element(cursor.fetchall())
-    print "%s comments have been labeled by >= 3 people" % len(thricely_labeled_comment_ids)
+    #print "%s comments have been labeled by >= 3 people" % len(thricely_labeled_comment_ids)
     return thricely_labeled_comment_ids
 
 

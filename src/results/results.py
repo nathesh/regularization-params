@@ -8,7 +8,7 @@ import matplotlib.text as txt
 import pdb
 from cost_function import cost_function
 import crossv
-
+import time 
 
 def check(x):
     if x == 0:
@@ -25,7 +25,7 @@ def check(x):
 loss_types = ["log", "hinge"]
 vote_types = ["MAX"]
 cost_function_i = cost_function()
-cost_file = open("test.csv", 'r')
+cost_file = open("cost.csv", 'r')
 cost_reader = csv.reader(cost_file, delimiter=',', quotechar='|')
 for loss_type in loss_types:
     for vote_type in vote_types:
@@ -44,6 +44,7 @@ for loss_type in loss_types:
             cost_read = [float(cr) for cr in cost_read]
             cost_read = [(cost_read[x], cost_read[x + 1])
                          for x in range(0, len(cost_read), 2)]
+            #print cost_read
             #read_num = reader.next()
             cost_function_i.add_min_max(cost_read)
             files = dirc + files + "/"
@@ -55,11 +56,11 @@ for loss_type in loss_types:
             f, axf = P.subplots(5, 4, sharex=True)
             P.suptitle("F1")
             f1_t = []
-            f1_cost = []
+            f1_cost_t = []
             acc_t = []
             acc_cost_t = []
             prec_t = []
-           	prec_cost_t = []
+            prec_cost_t = []
             rec_t = []
             rec_cost_t = []
             Alpha_vals = []
@@ -71,7 +72,7 @@ for loss_type in loss_types:
             acc_precentile = []
             prec_precentile = []
             rec_precentile = []
-            cost_function_i.add
+
             for nu, fi in fil:  # alpha value
                 alpha = fi.split('.csv')[0]
                 #n = "output/alpha_" + str(alpha) + ".csv"
@@ -86,7 +87,7 @@ for loss_type in loss_types:
                     precision = []
                     precision_cost = []
                     recall = []
-                    recall_cost =[]
+                    recall_cost = []
                     d = 0
                     for row in spamreader:
                         if d != 0:
@@ -138,13 +139,13 @@ for loss_type in loss_types:
                     # Focus_3
 
             All = (f1_t, acc_t, prec_t, rec_t)
-            All_cost = (f1_cost,acc_cost_t,prec_cos_t,rec_cost_t)
+            All_cost = (f1_cost_t, acc_cost_t, prec_cost_t, rec_cost_t)
             All_mean = (f1_mean_t, acc_mean_t, prec_mean_t, rec_mean_t)
             All_precentiles = (
                 f1_precentile, acc_precentile, prec_precentile, rec_precentile)
 
             for x in range(0, 4):
-                print check(x)
+                #print check(x)
                 # pdb.set_trace()
                 #f, axf 		= P.subplots(5,4,figsize=(16,16),sharex='all',sharey='all',squeeze=True)
                 num_vals = range(0, 20)
@@ -156,28 +157,38 @@ for loss_type in loss_types:
                 P.suptitle(check(x))
                 P.tight_layout()
                 sns.set_context("paper")
-                # P.xlim([0,1])
+                P.xlim([0,1])
                 now_mean = All_mean[x]
                 now_precent = All_precentiles[x]
                 for y in num_vals:
-                    cv = crossv.run(Alpha_vals[y], vote_type, loss_type)
+                    
                     cu = now[y]
                     cu_cost = now_cost[y]
-                    test = np.vstack((cu,cu_cost))
-                    print test.shape
+                    test = np.vstack((cu, cu_cost))
+                    #cu = test 
+                    #print cu.shape,cu_cost.shape
                     # print 'y =',y,'min value = ', np.min(cu),'max value = ', np.max(cu),'mean =', now_mean[y]
                     # print cu.shape,cu.size
-                    if np.min(cu) == 0:
+                    if np.min(cu) == 0 :
                         continue
                     if np.min(cu) <= 0 or np.max(cu) > 1:
                         print 'There are negs!'
+                    if y == 18 and x == 1 and float(Alpha_vals[y])- 67857 < 5:
+                        print cu_cost
+                    print 'Alpha: ', (float(Alpha_vals[y]) ** -1), 'Non-zeros: ', np.nonzero(cu_cost)[0].size,"y: ",y, "x :", x
+                    cv = crossv.run(Alpha_vals[y], vote_type, loss_type)
                     #cost_trail = cost_function_i.get_cost(y)
                     # throwing an error at 12?
+
+                    if y == 18 and x == 2:
+                        print "CU_COST:\n",cu_cost
+
                     sns.kdeplot(cu, ax=axf[y % num][y / num])
+                    sns.kdeplot(cu_cost, kernel='cos',ax=axf[y % num][y / num])
                     axf[y % num][
                         y / num].axvline(now_mean[y], ls="--", linewidth=1.5)
                     axf[y % num][
-                        y / num].axvline(cv[x], ls="--", linewidth=25, color="red")
+                        y / num].axvline(cv[x], ls="--", linewidth=1.25, color="red")
                     axf[y % num][
                         y / num].axvline(now_precent[y][0], ls="-", linewidth=1.25, color="black")
                     axf[y % num][

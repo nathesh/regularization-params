@@ -55,13 +55,12 @@ class cost_function:  # test cost for only recall now
     def calculate_current_cost(self,value):
         ret_vals = []
         for v,m in zip(value, self.min_max):
-            if float(v) > float(m[0]):
+            if float(v) >= float(m[0]):
                 ret_vals.append(0)
             elif float(v) < float(m[1]):
                 ret_vals.append(1)
             else:
                 ret_vals.append(math.exp(float(v) * -1))
-
         return ret_vals
 
 
