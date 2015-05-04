@@ -169,9 +169,11 @@ for loss_type in loss_types:
                     #print cu.shape,cu_cost.shape
                     # print 'y =',y,'min value = ', np.min(cu),'max value = ', np.max(cu),'mean =', now_mean[y]
                     # print cu.shape,cu.size
+                    '''
                     if np.min(cu) == 0 :
                         continue
-                    if np.min(cu) <= 0 or np.max(cu) > 1:
+                    '''
+                    if np.min(cu) < 0 or np.max(cu) > 1:
                         print 'There are negs!'
                     if y == 18 and x == 1 and float(Alpha_vals[y])- 67857 < 5:
                         print cu_cost
@@ -183,8 +185,8 @@ for loss_type in loss_types:
                     if y == 18 and x == 2:
                         print "CU_COST:\n",cu_cost
 
-                    sns.kdeplot(cu, ax=axf[y % num][y / num])
-                    sns.kdeplot(cu_cost, kernel='cos',ax=axf[y % num][y / num])
+                    sns.kdeplot(cu, kernel='cos',ax=axf[y % num][y / num])
+                    sns.kdeplot(cu_cost, gridsize=50,kernel='cos',ax=axf[y % num][y / num])
                     axf[y % num][
                         y / num].axvline(now_mean[y], ls="--", linewidth=1.5)
                     axf[y % num][
@@ -195,12 +197,12 @@ for loss_type in loss_types:
                         y / num].axvline(now_precent[y][1], ls="-", linewidth=1.25, color="black")
                     axf[y % num][
                         y / num].set_title("C=" + "%3.4g" % (float(Alpha_vals[y]) ** -1))
-                    text = '$\mu=%.2f$\n(%.2f,%.2f)' % (
-                        float(now_mean[y]), float(now_precent[y][0]), float(now_precent[y][1]))
+                    text = '$\hat{\mu}=%.2f$,$\mu=%.2f$\n(%.2f,%.2f)\n $\gamma=$%.2f\n' % (cv[x],
+                        float(now_mean[y]), float(now_precent[y][0]), float(now_precent[y][1]),np.sum(cu_cost)/100)
                     props = dict(
                         boxstyle='round', facecolor='wheat', alpha=0.5)
-                    axf[y % num][y / num].text(0.05, 0.95, text, transform=axf[y % num][y / num].transAxes, fontsize=12,
-                                               verticalalignment='top', bbox=props)
+                    axf[y % num][y / num].text(0.95, 0.95, text, transform=axf[y % num][y / num].transAxes, fontsize=10,
+                                               verticalalignment='top', horizontalalignment='right',bbox=props)
                     # print 'Done!'
                     # axf[y%5][y/5].set_title("C="+str(Alpha_vals[y]))
                 out = '../../output/irony/CL/' + loss_type + '/' + vote_type + \

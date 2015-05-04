@@ -81,9 +81,9 @@ def write():
                     prec_t.append(np.array(precision))
                     rec_t.append(np.array(recall))
                 counter_files = counter_files + 1
-                write = (loss_type, counter_files, np.percentile(f1_t, 95), np.percentile(f1_t, 33), \
-                         np.percentile(acc_t, 95), np.percentile(acc_t, 33), np.percentile(prec_t, 95), \
-                         np.percentile(prec_t, 33), np.percentile(rec_t, 95), np.percentile(rec_t, 33))
+                write = (loss_type, counter_files, np.percentile(f1_t, 75), np.percentile(f1_t, 33), \
+                         np.percentile(acc_t, 75), np.percentile(acc_t, 33), np.percentile(prec_t, 75), \
+                         np.percentile(prec_t, 33), np.percentile(rec_t, 75), np.percentile(rec_t, 33))
                 csv_out.writerow(write)
 
                 print "loss type: ", loss_type, counter_files + 1
