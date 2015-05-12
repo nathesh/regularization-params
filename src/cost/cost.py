@@ -34,7 +34,7 @@ def LT(loss_type):
 
 def write():
     loss_types = ['log', 'hinge']
-    with open("cost.csv", 'w') as out:
+    with open("cost_total.csv", 'w') as out:
         csv_out = csv.writer(out)
         ##csv_out.writerow(('loss type','trail number','F1 max', 'F1 min', 'Accuracy max', 'Accuracy min','Precision max','Precision min','Recall max','Recall min'))
         for loss_type in loss_types:
@@ -44,15 +44,16 @@ def write():
             files_1 = sorted(files, key=lambda x: int(x.split('_')[1]))
             files_1 = files_1[:6]
             counter_files = 0
+            f1_t = []
+            acc_t = []
+            prec_t = []
+            rec_t = []
             for file in files_1:  # these are the 6 trails (set of 6 trails)
                 current_trail = dirc + file + '/'
                 current_files = os.listdir(current_trail)
                 current_files = sorted(
                     current_files, key=lambda x: float(x.split('.csv')[0]) ** -1)
-                f1_t = []
-                acc_t = []
-                prec_t = []
-                rec_t = []
+
                 # 20 trails in that 6 trails
                 for current_file in current_files:
                     alpha = current_file.split('.csv')[0]
@@ -81,17 +82,17 @@ def write():
                     prec_t.append(np.array(precision))
                     rec_t.append(np.array(recall))
                 counter_files = counter_files + 1
-                write = (loss_type, counter_files, np.percentile(f1_t, 75), np.percentile(f1_t, 33), \
-                         np.percentile(acc_t, 75), np.percentile(acc_t, 33), np.percentile(prec_t, 75), \
-                         np.percentile(prec_t, 33), np.percentile(rec_t, 75), np.percentile(rec_t, 33))
-                csv_out.writerow(write)
+            write = (loss_type, counter_files, np.percentile(f1_t, 75), np.percentile(f1_t, 33), \
+                     np.percentile(acc_t, 75), np.percentile(acc_t, 33), np.percentile(prec_t, 75), \
+                     np.percentile(prec_t, 33), np.percentile(rec_t, 75), np.percentile(rec_t, 33))
+            csv_out.writerow(write)
 
-                print "loss type: ", loss_type, counter_files + 1
-                print "\nF1: ", np.max(f1_t),   np.percentile(f1_t, 33)
-                print "Accuracy: ", np.max(acc_t),  np.percentile(acc_t, 33)
-                print "Precision: ", np.max(prec_t), np.percentile(prec_t, 33)
-                print "Recall: ", np.max(rec_t),  np.percentile(rec_t, 33)
-                print "\n"
+            print "loss type: ", loss_type, counter_files + 1
+            print "\nF1: ", np.max(f1_t),   np.percentile(f1_t, 33)
+            print "Accuracy: ", np.max(acc_t),  np.percentile(acc_t, 33)
+            print "Precision: ", np.max(prec_t), np.percentile(prec_t, 33)
+            print "Recall: ", np.max(rec_t),  np.percentile(rec_t, 33)
+            print "\n"
 
 
 def cost_function_graphs():
