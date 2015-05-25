@@ -1,3 +1,5 @@
+import os
+from data import text_label 
 def strip_newsgroup_header(self, text):
     """
     Given text in "news" format, strip the headers, by removing everything
@@ -41,7 +43,7 @@ def strip_newsgroup_footer(self, text):
 
 
 def run():
-    s = '../../../data/newsgroups/20_newsgroups'
+    s = '../../../data/newsgroups/20_newsgroups/'
     files = os.listdir(s)
     files.sort()
     fi = files.pop(0)
