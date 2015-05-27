@@ -1,3 +1,5 @@
+import re 
+
 class text_label:
     data = []
     kv = {}
@@ -12,11 +14,10 @@ class text_label:
         self.target = target_input
 
     def strip_newsgroup_header(self, text):
-    """
-    Given text in "news" format, strip the headers, by removing everything
-    before the first blank line.
-    """
-
+        """
+        Given text in "news" format, strip the headers, by removing everything
+        before the first blank line.
+        """
         _before, _blankline, after = text.partition('\n\n')
         return after
 

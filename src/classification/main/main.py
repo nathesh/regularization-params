@@ -17,7 +17,6 @@ from data import text_label
 import irony
 import twenty_newsgroup
 
-
 def data(input, type_vote=None):  # return the data
     #print type_vote,input
     if input == 'Atheism vs. Christianity':
@@ -43,6 +42,7 @@ def clean(input):  # return data, target, vectorizer and length
     #print (input.data)
     data_set = np.array(input.data)
     target_vals = np.array(input.target)
+    print data_set.shape, target_vals.shape
     # using the SGD model
     vectorizer = TfidfVectorizer(
         stop_words='english', ngram_range=(1, 2), min_df=3, max_features=50000)
