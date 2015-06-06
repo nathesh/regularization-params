@@ -36,6 +36,7 @@ cost_reader = csv.reader(cost_file, delimiter=',', quotechar='|')
 file_writer = open(loss_types[0] + '.csv','w')
 file_csv = csv.writer(file_writer)
 file_csv.writerow(('alpha', 'test', 'mean','cv_mean','lower_percentile','upper_percentile','exp','step','linear'))
+file_cost_open =  open(loss_types[0] + '_cost.csv','r')
 for loss_type in loss_types:
     dirc = '../../output/irony/CL/' + loss_type + '/' + vote_type + '/'
     files = os.listdir(dirc)

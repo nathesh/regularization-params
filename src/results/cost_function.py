@@ -56,11 +56,11 @@ class cost_function:  # test cost for only recall now
         ret_vals = []
         for v,m in zip(value, self.min_max):
             vals = []
-            if float(v) >= float(m[0]):
+            if float(v) >= float(m[1]):
                 vals.append(0)
                 vals.append(0)
                 vals.append(0)
-            elif float(v) < float(m[1]):
+            elif float(v) < float(m[0]):
                 vals.append(1)
                 vals.append(1)
                 vals.append(1)
