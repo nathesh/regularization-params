@@ -20,7 +20,7 @@ import twenty_newsgroup
 def data(input, type_vote=None):  # return the data
     #print type_vote,input
     if input == 'Atheism vs. Christianity':
-        cats = ['alt.atheism', 'Christianity']
+        cats = ['alt.atheism', 'soc.religion.christian']
         # I got all (train and test)?? remove stuff
         ngs_1 = ngs(subset='all', categories=cats, remove=(
             'headers', 'footers', 'quotes'))
@@ -103,7 +103,7 @@ def output(scores, alpha, dataset, doc):
     if dataset == 'Irony':
         name = doc + str(alpha) + '.csv'
     else:
-        name = '../../../output/20_newsgroups/ath.v.all/outputs/' + \
+        name = doc + \
             str(alpha) + '.csv'  # need to change this
 
     with open(name, 'w') as out:
@@ -125,7 +125,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     types_vote = ['MAJORITY']
     types_model = ['log', 'hinge']
     for type_vote in types_vote:
-        data = data('Atheism vs. All', type_vote)  # input
+        data = data('Atheism vs. Christianity', type_vote)  # input
         data, target_vals, vectorizer, length = clean(data)
         bs = cv.Bootstrap(length, n_iter=100)
         alpha_val_range = []
@@ -135,7 +135,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
         for x, y, z in alpha_val_range:
             alpha_vals = np.linspace(y, x, 20)  # trail 8
             for type_model in types_model:
-                doc = '../../../output//20_newsgroups/ath.v.all/outputs/'
+                doc = '../../../output//20_newsgroups/ath.v.chs/outputs/'
                 trails(
                     data, target_vals, vectorizer, bs, type_model, alpha_vals, 'Atheism vs. All', doc)
         print "Done?"
