@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+    #!/usr/local/bin/python
 # all the imports
 from sklearn.datasets import fetch_20newsgroups as ngs
 from sklearn import cross_validation as cv
@@ -132,10 +132,11 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
         for i in range(5, 10):
             alpha_val_range.append((10 ** -i, 10 ** -(i + 1), i - 2))
 
-        for x, y, z in alpha_val_range:
+        for x, y, z  in alpha_val_range:
             alpha_vals = np.linspace(y, x, 20)  # trail 8
             for type_model in types_model:
-                doc = '../../../output//20_newsgroups/ath.v.chs/outputs/'
+                doc = '../../../output/20_newsgroups/ath.v.chs/outputs/'
                 trails(
                     data, target_vals, vectorizer, bs, type_model, alpha_vals, 'Atheism vs. All', doc)
         print "Done?"
+
