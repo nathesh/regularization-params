@@ -116,7 +116,7 @@ def get_values(loss_type_input):
     f1_sum = [f1_total_cost[key][:,0] for key in f1_total_cost.keys()]
     f1_sum = np.max((np.array(f1_sum)))
 
-    print loss_type_input, 'MAX:', f1_sum #, np.max(accuracy_total_cost[:,0].flatten()),np.max(precision_total_cost[:,0].flatten()),np.max(recall_total_cost[:,0].flatten())
+    #print loss_type_input, 'MAX:', f1_sum #, np.max(accuracy_total_cost[:,0].flatten()),np.max(precision_total_cost[:,0].flatten()),np.max(recall_total_cost[:,0].flatten())
     Measures=[f1_total, accuracy_total, precision_total, recall_total]
     Cost=[f1_total_cost, accuracy_total_cost,
         precision_total_cost, recall_total_cost]
@@ -124,7 +124,7 @@ def get_values(loss_type_input):
     for c in Cost:
         max1 = [np.sum(np.array(c[key][:,0])) for key in c]
         max1 = np.max(max1)
-        print 'MAX', type(max1)
+        #print 'MAX', type(max1)
         max_ret.append(float(max1))
 
     return Measures, Cost, max_ret
@@ -133,16 +133,16 @@ def get_pairs(Measure):  # Cost type is still needed for all
     pairs = []
     for measure_1 in Measure:
         mean_1 =  float('%.2f'% measure_1[1])
-        exp_1 = float('%.2f'% measure_1[2])
+        exp_1 = float('%.2f'% measure_1[4])
         for measure_2 in Measure:
             if measure_1 != measure_2:
                 mean_2 =  float('%.2f'% measure_2[1])
-                exp_2 = float('%.2f' % measure_2[2])
+                exp_2 = float('%.2f' % measure_2[4])
                 if (mean_1 > mean_2) and (exp_1 > exp_2):
                     # print "%3.4g" % measure_1[0], "%3.4g" % measure_2[0]
                     #print exp_1,exp_2
                     pairs.append(
-                        [measure_1[0],measure_2[0], exp_1-exp_2])
+                        [measure_1[0],measure_2[0],mean_1-mean_2])
 
     pairs=sorted(pairs, key = lambda x: x[2], reverse=True)
     #print len(pairs)
