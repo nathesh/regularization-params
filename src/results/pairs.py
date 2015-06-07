@@ -94,7 +94,7 @@ def get_values(loss_type_input):
                         precision_alpha_cost.append(precision_cost)
                         recall_alpha_cost.append(recall_cost)
 
-                cv = crossv.run(float(alpha), vote_type, loss_type)
+                cv = crossv.get_irony(float(alpha), vote_type, loss_type)
                 f1_alpha = np.array(f1_alpha)
                 accuracy_alpha = np.array(accuracy_alpha)
                 recall_alpha = np.array(recall_alpha)
@@ -130,7 +130,7 @@ def get_values(loss_type_input):
     f1_sum = [f1_total_cost[key][:,0] for key in f1_total_cost.keys()]
     f1_sum = np.max((np.array(f1_sum)))
 
-    print loss_type_input, 'MAX:', f1_sum #, np.max(accuracy_total_cost[:,0].flatten()),np.max(precision_total_cost[:,0].flatten()),np.max(recall_total_cost[:,0].flatten())
+    #print loss_type_input, 'MAX:', f1_sum #, np.max(accuracy_total_cost[:,0].flatten()),np.max(precision_total_cost[:,0].flatten()),np.max(recall_total_cost[:,0].flatten())
     Measures=[f1_total, accuracy_total, precision_total, recall_total]
     Cost=[f1_total_cost, accuracy_total_cost,
         precision_total_cost, recall_total_cost]
@@ -138,7 +138,7 @@ def get_values(loss_type_input):
     for c in Cost:
         max1 = [np.sum(np.array(c[key][:,0])) for key in c]
         max1 = np.max(max1)
-        print 'MAX', type(max1)
+        #print 'MAX', type(max1)
         max_ret.append(float(max1))
 
     return Measures, Cost, max_ret
@@ -147,11 +147,11 @@ def get_pairs(Measure):  # Cost type is still needed for all
     pairs = []
     for measure_1 in Measure:
         mean_1 =  float('%.2f'% measure_1[1])
-        exp_1 = float('%.2f'% measure_1[4])
+        exp_1 = float('%.2f'% measure_1[2])
         for measure_2 in Measure:
             if measure_1 != measure_2:
                 mean_2 =  float('%.2f'% measure_2[1])
-                exp_2 = float('%.2f' % measure_2[4])
+                exp_2 = float('%.2f' % measure_2[2])
                 if (mean_1 > mean_2) and (exp_1 > exp_2):
                     # print "%3.4g" % measure_1[0], "%3.4g" % measure_2[0]
                     #print exp_1,exp_2
@@ -182,9 +182,9 @@ def plot(pairs, Measures, Costs, num,loss_type,max_cost):
     for n,pair in list(enumerate(pairs)):
         C_1=float(pair[0])
         #print C_1, type(Measures)
-        C_2=float(pair[1])
-        cv_first = crossv.run(C_1, 'MAX', loss_type)
-        cv_second = crossv.run(C_2, 'MAX', loss_type)
+        C_2=float(pair[1])  
+        cv_first = crossv.get_irony(C_1, 'MAX', loss_type)
+        cv_second = crossv.get_irony(C_2, 'MAX', loss_type)
         first_measure=Measures[num][C_1]
         first_cost = Costs[num][C_1]
         second_measure=Measures[num][C_2]
@@ -273,7 +273,7 @@ for hinge in hinge_reader:
         continue
     else:
         C=float(hinge[0])
-        mean=float(hinge[2])
+        mean=float(hinge[3])
         exp=float(hinge[6])
         step=float(hinge[7])
         linear=float(hinge[8])
@@ -294,7 +294,7 @@ for log in log_reader:
         continue
     else:
         C=float(log[0])
-        mean=float(log[2])
+        mean=float(log[3])
         exp=float(log[6])
         step=float(log[7])
         linear=float(log[8])

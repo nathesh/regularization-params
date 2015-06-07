@@ -259,7 +259,7 @@ for hinge in hinge_reader:
         continue
     else:
         C=float(hinge[0])
-        mean=float(hinge[2])
+        mean=float(hinge[3])
         exp=float(hinge[6])
         step=float(hinge[7])
         linear=float(hinge[8])
@@ -280,7 +280,7 @@ for log in log_reader:
         continue
     else:
         C=float(log[0])
-        mean=float(log[2])
+        mean=float(log[3])
         exp=float(log[6])
         step=float(log[7])
         linear=float(log[8])

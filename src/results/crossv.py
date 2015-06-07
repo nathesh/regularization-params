@@ -8,6 +8,7 @@ import irony  # need to fix the location of this
 import os 
 
 def data_d(dataset, vote):
+    print vote
     return irony.get_conservatives_liberal(vote)
 
 
@@ -34,6 +35,8 @@ def run(alpha, vote, loss):
         measures = [f1, accuracy, precision, recall]
         scores.append(measures)
     scores = np.array(scores)  # return F,A,P,R
+    a = np.asarray([np.mean(scores[:, 0]), np.mean(scores[:, 1]), np.mean(scores[:, 2]), np.mean(scores[:, 3])])
+    np.savetxt("cv_irony/" + loss + "_" + str(alpha) + ".csv", a, delimiter=",")
     return np.mean(scores[:, 0]), np.mean(scores[:, 1]), np.mean(scores[:, 2]), np.mean(scores[:, 3])
 
 def run_NG(alpha, vote, loss):
@@ -91,4 +94,34 @@ def NG():
     
 def get_NG(alpha,loss):
     my_data = np.genfromtxt('cv/'+ loss + '_' + str(alpha) + '.csv' , delimiter=',')
+    return my_data[0],my_data[1],my_data[2],my_data[3]
+
+def irony_r():
+    loss_types = ['hinge','log']
+    vote_type = "MAX"
+    for loss_type in loss_types:
+        dirc = '../../output/irony/CL/' + loss_type + '/' + vote_type + '/'
+        files = os.listdir(dirc)
+        files.remove('results')
+        files = sorted(files, key=lambda x: int(x.split('_')[1]))
+        files = files[:6]
+        for file_num, file in list(enumerate(files, start=1)):
+            #print file.split('_')[1]
+            if int(file.split('_')[1]) < 3:
+                #print file
+                continue
+            file = dirc + file + "/"
+            alpha_file = os.listdir(file)
+            file_t = sorted(
+                alpha_file, key=lambda x: float(x.split('.csv')[0]) ** -1)
+            counter = 0
+
+            for path in file_t:  # each file with an alpha value
+                alpha = path.split('.csv')[0]
+                # print counter%5,alpha
+                path = file + path
+                run(float(alpha),'MAX',loss_type)
+
+def get_irony(alpha,type,loss):
+    my_data = np.genfromtxt('cv_irony/'+ loss + '_' + str(alpha) + '.csv' , delimiter=',')
     return my_data[0],my_data[1],my_data[2],my_data[3]
