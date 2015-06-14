@@ -157,11 +157,13 @@ def get_pairs(Measure):  # Cost type is still needed for all
     for measure_1 in Measure:
         mean_1 =  float('%.2f'% measure_1[1])
         exp_1 = float('%.2f'% measure_1[3])
+        main_mean_1 = float('%.2f'% measure_1[5])
         for measure_2 in Measure:
             if measure_1 != measure_2:
                 mean_2 =  float('%.2f'% measure_2[1])
                 exp_2 = float('%.2f' % measure_2[3])
-                if (mean_1 > mean_2) and (exp_1 > exp_2):
+                main_mean_2 = float('%.2f'% measure_2[5])
+                if (mean_1 > mean_2) and (exp_1 > exp_2) and (main_mean_1> mean_1 and main_mean_2>mean_2):
                     # print "%3.4g" % measure_1[0], "%3.4g" % measure_2[0]
                     #print exp_1,exp_2
                     pairs.append(
@@ -217,9 +219,9 @@ def plot(pairs, Measures, Costs, num,loss_type,max_cost):
         sns.kdeplot(first_measure, kernel='cos', ax=axf[n][0])
         sns.kdeplot(second_measure, kernel='cos', ax=axf[n][1])
         sns.kdeplot(
-            first_cost[:,2], gridsize=50, kernel='cos', ax=axf[n][2],label="linear")
+            first_cost[:,1], gridsize=50, kernel='cos', ax=axf[n][2],label="step")
         sns.kdeplot(
-            second_cost[:,2], gridsize=50, kernel='cos', ax=axf[n][3],label="linear")
+            second_cost[:,1], gridsize=50, kernel='cos', ax=axf[n][3],label="step")
         axf[n][
             0].axvline(np.mean(first_measure), ls="--", linewidth=1.5)
         axf[n][
@@ -241,13 +243,13 @@ def plot(pairs, Measures, Costs, num,loss_type,max_cost):
         axf[n][1].set_title(
             "C=" + C_2)
         text = '$\hat{\mu}=%.2f$,$\mu=%.2f$\n(%.2f,%.2f)\n $\ \mathcal{L}_{e}=$%.2f' % (cv_first[num],
-                float(np.mean(first_measure)), lower_percentile_first, upper_percentile_first, np.sum(first_cost[:,2]/max_cost[num][2]))
+                float(np.mean(first_measure)), lower_percentile_first, upper_percentile_first, np.sum(first_cost[:,1]/max_cost[num][1]))
         props = dict(
                 boxstyle='round', facecolor='wheat', alpha=0.5)
         axf[n][0].text(0.95, 0.95, text, transform=axf[n][0].transAxes, fontsize=10,
                                verticalalignment='top', horizontalalignment='right', bbox=props)
         text = '$\hat{\mu}=%.2f$,$\mu=%.2f$\n(%.2f,%.2f)\n $\ \mathcal{L}_{e}=$%.2f' % (cv_second[num],
-                float(np.mean(second_measure)), lower_percentile_second, upper_percentile_second, np.sum(second_cost[:,2]/max_cost[num][2])) 
+                float(np.mean(second_measure)), lower_percentile_second, upper_percentile_second, np.sum(second_cost[:,1]/max_cost[num][1])) 
         props = dict(
                 boxstyle='round', facecolor='wheat', alpha=0.5)
         axf[n][1].text(0.95, 0.95, text, transform=axf[n][1].transAxes, fontsize=10,
@@ -288,15 +290,16 @@ for hinge in hinge_reader:
         exp=float(hinge[6])
         step=float(hinge[7])
         linear=float(hinge[8])
+        main_mean = float(hinge[2])
 
         if hinge[1] == 'F1':
-            F1_hinge.append([C, mean, exp, step, linear])
+            F1_hinge.append([C, mean, exp, step, linear,main_mean])
         elif hinge[1] == 'accuracy':
-            accuracy_hinge.append([C, mean, exp, step, linear])
+            accuracy_hinge.append([C, mean, exp, step, linear,main_mean])
         elif hinge[1] == 'precision':
-            precision_hinge.append([C, mean, exp, step, linear])
+            precision_hinge.append([C, mean, exp, step, linear,main_mean])
         else:
-            recall_hinge.append([C, mean, exp, step, linear])
+            recall_hinge.append([C, mean, exp, step, linear,main_mean])
 Hinge=[F1_hinge, accuracy_hinge, precision_hinge, recall_hinge]
 breaker=0
 for log in log_reader:
@@ -309,15 +312,15 @@ for log in log_reader:
         exp=float(log[6])
         step=float(log[7])
         linear=float(log[8])
-
+        main_mean = float(log[2])
         if log[1] == 'F1':
-            F1_log.append([C, mean, exp, step, linear])
+            F1_log.append([C, mean, exp, step, linear,main_mean])
         elif log[1] == 'accuracy':
-            accuracy_log.append([C, mean, exp, step, linear])
+            accuracy_log.append([C, mean, exp, step, linear,main_mean])
         elif log[1] == 'precision':
-            precision_log.append([C, mean, exp, step, linear])
+            precision_log.append([C, mean, exp, step, linear,main_mean])
         else:
-            recall_log.append([C, mean, exp, step, linear])
+            recall_log.append([C, mean, exp, step, linear,main_mean])
 Log=[F1_log, accuracy_log, precision_log, recall_log]
 for num, loss in list(enumerate(zip(Hinge, Log))):
     pairs_hinge=get_pairs(loss[0])

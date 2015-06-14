@@ -31,7 +31,7 @@ def get_values(loss_type_input):
 		 
 		total_measure = {}
 		total_cost = {}
-
+		max_cost = []
 		alpha_values = []
 		for path in files:  # each file with an alpha value
 			alpha = path.split('.csv')[0]
@@ -44,7 +44,7 @@ def get_values(loss_type_input):
 			breaks = 0
 			measures = []
 			costs = []
-			max_cost = []
+			
 
 			for read in reader:
 				if breaks == 0:
@@ -67,6 +67,9 @@ def get_values(loss_type_input):
 			#print "Measure:", measure
 			total_cost[alpha]= costs
 			max_cost.append(np.sum(costs))
+			#print alpha
+			if alpha == (float('1.47368421053e-09')):
+				print 'SUM:',(np.sum(costs))
 			#print 'Alpha: ',alpha
 			#print cv, alpha, loss_type
 			write = [alpha, np.mean(measures), cv, np.sum(costs)]
@@ -92,7 +95,7 @@ def get_pairs(Measure):  # Cost type is still needed for all
 					# print "%3.4g" % measure_1[0], "%3.4g" % measure_2[0]
 					#print exp_1,exp_2
 					pairs.append(
-						[measure_1[0],measure_2[0],exp_1-exp_2])
+						[measure_1[0],measure_2[0],mean_1-mean_2])
 
 	pairs=sorted(pairs, key = lambda x: x[2], reverse=True)
 	#print len(pairs)
@@ -118,13 +121,14 @@ def plot(pairs, Measures, Costs, loss_type,max_cost):
 	for n,pair in list(enumerate(pairs)):
 		C_1=float(pair[0])
 		#print C_1, type(Measures)
+		psst = C_1
 		C_2=float(pair[1])
 		cv_first = crossv.get_SR(C_1,loss_type)
 		cv_second = crossv.get_SR(C_2,loss_type)
 		first_measure=Measures[C_1]
 		#print "typefirst measure:",first_measure
 		first_cost = Costs[C_1]
-		print "FIRST COST:", type(first_cost)
+		#print "FIRST COST:", type(first_cost)
 		second_measure=Measures[C_2]
 		second_cost = Costs[C_2]
 		C_1 = '%3.4g' % (C_1**-1)
@@ -144,10 +148,14 @@ def plot(pairs, Measures, Costs, loss_type,max_cost):
 
 		sns.kdeplot(first_measure, kernel='cos', ax=axf[n][0])
 		sns.kdeplot(second_measure, kernel='cos', ax=axf[n][1])
+		axf[n][0].set_xlim([0,.64])
+		axf[n][1].set_xlim(0,.64)
 		sns.kdeplot(
 			first_cost/max_cost, ax=axf[n][2],label="Cost")
 		sns.kdeplot(
 			second_cost/max_cost, ax=axf[n][3],label="Cost")
+		axf[n][2].set_xlim([0,.03])
+		axf[n][3].set_xlim([0,.03])
 		axf[n][
 			0].axvline(np.mean(first_measure), ls="--", linewidth=1.5)
 		axf[n][
@@ -170,6 +178,7 @@ def plot(pairs, Measures, Costs, loss_type,max_cost):
 			"C=" + C_2)
 		text = '$\hat{\mu}=%.2f$,$\mu=%.2f$\n(%.2f,%.2f)\n $\ \mathcal{L}_{e}=$%.2f' % (cv_first,
 				float(np.mean(first_measure)), lower_percentile_first, upper_percentile_first, np.sum(first_cost/max_cost))
+		#print 'C1',psst,'MAX-1', np.sum(first_cost),max_cost
 		props = dict(
 				boxstyle='round', facecolor='wheat', alpha=0.5)
 		axf[n][0].text(0.95, 0.95, text, transform=axf[n][0].transAxes, fontsize=10,
@@ -181,6 +190,7 @@ def plot(pairs, Measures, Costs, loss_type,max_cost):
 		axf[n][1].text(0.95, 0.95, text, transform=axf[n][1].transAxes, fontsize=10,
 							   verticalalignment='top', horizontalalignment='right', bbox=props)
 		legend()
+				
 	out = "test_results_SR/" + loss_type  + ".jpg"
 	print out
 	P.savefig(out)
