@@ -9,7 +9,7 @@ import pdb
 from cost_function import cost_function
 from pylab import *
 import crossv
-
+import sys
 
 '''
 Calculate the pairs for all of them:
@@ -47,6 +47,12 @@ def get_values(loss_type_input):
         accuracy_total_cost = {}
         precision_total_cost = {}
         recall_total_cost = {}
+
+        max_cost_F1 = []
+        max_cost_accuracy = []
+        max_cost_precision = []
+        max_cost_recall = []
+
 
         alpha_values = []
         # file = trails_1
@@ -113,6 +119,11 @@ def get_values(loss_type_input):
                 precision_total[alpha] = precision_alpha
                 recall_total[alpha] = recall_alpha
 
+                max_cost_F1.append(np.sum(f1_alpha_cost,axis=0))
+                max_cost_accuracy.append(np.sum(accuracy_alpha_cost,axis=0))
+                max_cost_precision.append(np.sum(precision_alpha_cost,axis=0))
+                max_cost_recall.append(np.sum(recall_alpha_cost,axis=0))
+
                 f1_total_cost[alpha]=f1_alpha_cost
                 accuracy_total_cost[alpha]=accuracy_alpha_cost
                 precision_total_cost[alpha]=precision_alpha_cost
@@ -127,9 +138,7 @@ def get_values(loss_type_input):
                 write = [alpha, 'recall', np.mean(recall_alpha), cv[3], np.percentile(recall_alpha, 25), np.percentile(recall_alpha, 75), np.sum(recall_alpha_cost[:,0]), np.sum(recall_alpha_cost[:,1]), np.sum(recall_alpha_cost[:,2])]
                 file_csv.writerow(write)
 
-    f1_sum = [f1_total_cost[key][:,0] for key in f1_total_cost.keys()]
-    f1_sum = np.max((np.array(f1_sum)))
-
+    
     #print loss_type_input, 'MAX:', f1_sum #, np.max(accuracy_total_cost[:,0].flatten()),np.max(precision_total_cost[:,0].flatten()),np.max(recall_total_cost[:,0].flatten())
     Measures=[f1_total, accuracy_total, precision_total, recall_total]
     Cost=[f1_total_cost, accuracy_total_cost,
@@ -140,7 +149,7 @@ def get_values(loss_type_input):
         max1 = np.max(max1)
         #print 'MAX', type(max1)
         max_ret.append(float(max1))
-
+    max_ret = [np.max(np.array(max_cost_F1),axis=0),np.max(np.array(max_cost_accuracy),axis=0),np.max(np.array(max_cost_precision),axis=0),np.max(np.array(max_cost_recall),axis=0)]
     return Measures, Cost, max_ret
 
 def get_pairs(Measure):  # Cost type is still needed for all
@@ -208,9 +217,9 @@ def plot(pairs, Measures, Costs, num,loss_type,max_cost):
         sns.kdeplot(first_measure, kernel='cos', ax=axf[n][0])
         sns.kdeplot(second_measure, kernel='cos', ax=axf[n][1])
         sns.kdeplot(
-            first_cost[:,0], gridsize=50, kernel='cos', ax=axf[n][2],label="step")
+            first_cost[:,2], gridsize=50, kernel='cos', ax=axf[n][2],label="linear")
         sns.kdeplot(
-            second_cost[:,0], gridsize=50, kernel='cos', ax=axf[n][3],label="step")
+            second_cost[:,2], gridsize=50, kernel='cos', ax=axf[n][3],label="linear")
         axf[n][
             0].axvline(np.mean(first_measure), ls="--", linewidth=1.5)
         axf[n][
@@ -232,13 +241,13 @@ def plot(pairs, Measures, Costs, num,loss_type,max_cost):
         axf[n][1].set_title(
             "C=" + C_2)
         text = '$\hat{\mu}=%.2f$,$\mu=%.2f$\n(%.2f,%.2f)\n $\ \mathcal{L}_{e}=$%.2f' % (cv_first[num],
-                float(np.mean(first_measure)), lower_percentile_first, upper_percentile_first, np.sum(first_cost[:,2]))
+                float(np.mean(first_measure)), lower_percentile_first, upper_percentile_first, np.sum(first_cost[:,2]/max_cost[num][2]))
         props = dict(
                 boxstyle='round', facecolor='wheat', alpha=0.5)
         axf[n][0].text(0.95, 0.95, text, transform=axf[n][0].transAxes, fontsize=10,
                                verticalalignment='top', horizontalalignment='right', bbox=props)
         text = '$\hat{\mu}=%.2f$,$\mu=%.2f$\n(%.2f,%.2f)\n $\ \mathcal{L}_{e}=$%.2f' % (cv_second[num],
-                float(np.mean(second_measure)), lower_percentile_second, upper_percentile_second, np.sum(second_cost[:,2])) 
+                float(np.mean(second_measure)), lower_percentile_second, upper_percentile_second, np.sum(second_cost[:,2]/max_cost[num][2])) 
         props = dict(
                 boxstyle='round', facecolor='wheat', alpha=0.5)
         axf[n][1].text(0.95, 0.95, text, transform=axf[n][1].transAxes, fontsize=10,
