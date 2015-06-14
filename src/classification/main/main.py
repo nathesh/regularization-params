@@ -16,7 +16,7 @@ import sqlite3
 from data import text_label
 import irony
 import twenty_newsgroup
-
+import Systematic_Review as SR 
 def data(input, type_vote=None):  # return the data
     #print type_vote,input
     if input == 'Atheism vs. Christianity':
@@ -33,6 +33,9 @@ def data(input, type_vote=None):  # return the data
         #print "Why no get here?"
         test = irony.get_conservatives_liberal(type_vote)
         return test
+    elif input == 'Systematic_Review':
+        return SR.get_all()
+
 
 
 
@@ -81,7 +84,7 @@ def trails_bs(data, target_vals, vectorizer, bs, ml, alpha, dataset_use, doc):
         precision = metrics.precision_score(test_traget_vals, predict)
         recall = metrics.recall_score(test_traget_vals, predict)
         measures = (f1, accuracy, precision, recall)
-        scores.append(measures)
+        scores  .append(measures)
     output(scores, alpha, dataset_use, doc)
 
 
@@ -125,7 +128,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
     types_vote = ['MAJORITY']
     types_model = ['log', 'hinge']
     for type_vote in types_vote:
-        data = data('Atheism vs. Christianity', type_vote)  # input
+        data = data('Systematic_Review', type_vote)  # input
         data, target_vals, vectorizer, length = clean(data)
         bs = cv.Bootstrap(length, n_iter=100)
         alpha_val_range = []
@@ -135,7 +138,7 @@ if __name__ == "__main__":  # inputs -> (dataset,model used)
         for x, y, z  in alpha_val_range:
             alpha_vals = np.linspace(y, x, 20)  # trail 8
             for type_model in types_model:
-                doc = '../../../output/20_newsgroups/ath.v.chs/outputs/'
+                doc = '../../../output/Systematic_Review/outputs/' + type_model + '/'
                 trails(
                     data, target_vals, vectorizer, bs, type_model, alpha_vals, 'Atheism vs. All', doc)
         print "Done?"

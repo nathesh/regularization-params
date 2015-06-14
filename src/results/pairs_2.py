@@ -9,7 +9,7 @@ import pdb
 from cost_function import cost_function
 from pylab import *
 import crossv
-
+import sys 
 
 '''
 Calculate the pairs for all of them:
@@ -142,7 +142,7 @@ def get_pairs(Measure):  # Cost type is still needed for all
                     # print "%3.4g" % measure_1[0], "%3.4g" % measure_2[0]
                     #print exp_1,exp_2
                     pairs.append(
-                        [measure_1[0],measure_2[0],mean_1-mean_2])
+                        [measure_1[0],measure_2[0],exp_1-exp_2])
 
     pairs=sorted(pairs, key = lambda x: x[2], reverse=True)
     #print len(pairs)
@@ -161,10 +161,13 @@ def get_num(x):
 
 
 def plot(pairs, Measures, Costs, num,loss_type,max_cost):
+    #P.xlim([0, 1])
     f, axf = P.subplots(
-    5, 4, figsize = (16, 16), sharex = 'all', sharey = 'col', squeeze = True)
+    5, 4, figsize = (16, 16), sharex = 'col', sharey = 'col', squeeze = True)
     P.tight_layout()
-    P.xlim([0, 1])
+    for x in range(0,5):
+        for y in range(2,4):
+            axf[x][y].set_xlim([0,1])
     for n,pair in list(enumerate(pairs)):
         C_1=float(pair[0])
         #print C_1, type(Measures)
@@ -192,9 +195,9 @@ def plot(pairs, Measures, Costs, num,loss_type,max_cost):
         sns.kdeplot(first_measure, kernel='cos', ax=axf[n][0])
         sns.kdeplot(second_measure, kernel='cos', ax=axf[n][1])
         sns.kdeplot(
-            first_cost[:,0], gridsize=50, kernel='cos', ax=axf[n][2],label="exponential")
+            first_cost[:,0], gridsize=50, kernel='cos', ax=axf[n][2],label="linear")
         sns.kdeplot(
-            second_cost[:,0], gridsize=50, kernel='cos', ax=axf[n][3],label="exponential")
+            second_cost[:,0], gridsize=50, kernel='cos', ax=axf[n][3],label="linear")
         axf[n][
             0].axvline(np.mean(first_measure), ls="--", linewidth=1.5)
         axf[n][
@@ -295,6 +298,7 @@ for log in log_reader:
             recall_log.append([C, mean, exp, step, linear])
 Log=[F1_log, accuracy_log, precision_log, recall_log]
 for num, loss in list(enumerate(zip(Hinge, Log))):
+    #print loss[0][0]
     pairs_hinge=get_pairs(loss[0])
     pairs_log=get_pairs(loss[1])
     plot(pairs_hinge, Measures_hinge, Cost_hinge, num,'hinge',max_cost_hinge)

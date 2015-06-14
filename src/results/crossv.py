@@ -6,7 +6,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import metrics
 import irony  # need to fix the location of this
 import os 
-
+import sys
+import random
+sys.path.insert(0, '/home/thejas/Documents/python/regularization-params/src/classification/main')
+import Systematic_Review as S_R
 def data_d(dataset, vote):
     print vote
     return irony.get_conservatives_liberal(vote)
@@ -125,3 +128,57 @@ def irony_r():
 def get_irony(alpha,type,loss):
     my_data = np.genfromtxt('cv_irony/'+ loss + '_' + str(alpha) + '.csv' , delimiter=',')
     return my_data[0],my_data[1],my_data[2],my_data[3]
+
+
+def run_SR(alpha,loss):
+    data_set = S_R.get_all()
+    data = data_set.data
+    target_vals = data_set.target
+    #print np.sum(target_vals)
+    tu = [(x,y) for x,y in zip(data,target_vals)]
+    random.shuffle(tu)
+    data = [x for x,y in tu]
+    target_vals = [y for x,y in tu]
+    print 
+    data = np.array(data)[:4025]
+    target_vals = np.array(data)[:4025]
+    vectorizer = TfidfVectorizer(
+        stop_words='english', ngram_range=(1, 2), min_df=3, max_features=50000)
+    scores = []
+    kf = KFold(len(data), n_folds=5)
+    for train_index, test_index in kf:
+        test = data[test_index]
+        train = data[train_index]
+        train_target_vals = target_vals[train_index]
+        test_traget_vals = target_vals[test_index]
+        fit = vectorizer.fit(train)
+        vector_train = fit.transform(train)
+        vector_test = fit.transform(test)
+        model = linear_model.SGDClassifier(loss=loss, alpha=alpha)
+        #print np.sum(train_target_vals) 
+        model.fit(vector_train, train_target_vals)
+        predict = model.predict(vector_test)
+        measure = metrics.fbeta_score(test_traget_vals,predict,beta=10)
+        scores.append(measure)
+    scores = np.array(scores)
+    a = np.asarray([np.mean(scores)])
+    np.savetxt("cv_SR/" + loss + "_" + str(alpha) + ".csv", a, delimiter=",")
+def SR():
+    loss_types = ['hinge','log']
+    for loss_type in loss_types:
+        dirc = '../../output/Systematic_Review/outputs/' + loss_type 
+        files = os.listdir(dirc)
+        f = open("alpha_vals.txt",'wb')
+        for path in files:
+            alpha = float(path.split('.csv')[0])
+            print alpha
+            f.write(str(alpha) + '\n')
+            #run_SR(alpha,loss_type)
+            print alpha
+    
+
+def get_SR(alpha,loss):
+    #print 'cv_SR/'+ loss + '_' + str(alpha) + '.csv'
+    my_data = np.genfromtxt('cv_SR/'+ loss + '_' + str(alpha) + '.csv' , delimiter=',')
+    return my_data
+

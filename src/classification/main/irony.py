@@ -79,5 +79,6 @@ def get_all(type_vote):
     labels = map(lambda x: 1 if x[1] > 0 else 0, text_labels)
     data = text_label()
     data.add_all(text, labels)
+    print len(text)
     return data
 

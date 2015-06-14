@@ -5,7 +5,7 @@
   #                                                                       
   ####################                                                    
                                                                           
-Executable   = threading_main.py
+Executable   = multithread_main.py
                                            
 Universe     = vanilla
 Log          = foo2.log                                                    

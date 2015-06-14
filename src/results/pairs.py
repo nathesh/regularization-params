@@ -147,11 +147,11 @@ def get_pairs(Measure):  # Cost type is still needed for all
     pairs = []
     for measure_1 in Measure:
         mean_1 =  float('%.2f'% measure_1[1])
-        exp_1 = float('%.2f'% measure_1[2])
+        exp_1 = float('%.2f'% measure_1[3])
         for measure_2 in Measure:
             if measure_1 != measure_2:
                 mean_2 =  float('%.2f'% measure_2[1])
-                exp_2 = float('%.2f' % measure_2[2])
+                exp_2 = float('%.2f' % measure_2[3])
                 if (mean_1 > mean_2) and (exp_1 > exp_2):
                     # print "%3.4g" % measure_1[0], "%3.4g" % measure_2[0]
                     #print exp_1,exp_2
@@ -176,9 +176,11 @@ def get_num(x):
 
 def plot(pairs, Measures, Costs, num,loss_type,max_cost):
     f, axf = P.subplots(
-    5, 4, figsize = (16, 16), sharex = 'all', sharey = 'col', squeeze = True)
+    5, 4, figsize = (16, 16), sharex = 'col', sharey = 'col', squeeze = True)
     P.tight_layout()
-    P.xlim([0, 1])
+    for x in range(0,5):
+        for y in range(2,4):
+            axf[x][y].set_xlim([0,1])
     for n,pair in list(enumerate(pairs)):
         C_1=float(pair[0])
         #print C_1, type(Measures)
@@ -206,9 +208,9 @@ def plot(pairs, Measures, Costs, num,loss_type,max_cost):
         sns.kdeplot(first_measure, kernel='cos', ax=axf[n][0])
         sns.kdeplot(second_measure, kernel='cos', ax=axf[n][1])
         sns.kdeplot(
-            first_cost[:,0], gridsize=50, kernel='cos', ax=axf[n][2],label="exponential")
+            first_cost[:,0], gridsize=50, kernel='cos', ax=axf[n][2],label="step")
         sns.kdeplot(
-            second_cost[:,0], gridsize=50, kernel='cos', ax=axf[n][3],label="exponential")
+            second_cost[:,0], gridsize=50, kernel='cos', ax=axf[n][3],label="step")
         axf[n][
             0].axvline(np.mean(first_measure), ls="--", linewidth=1.5)
         axf[n][
